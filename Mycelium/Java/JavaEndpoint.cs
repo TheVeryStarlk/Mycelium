@@ -1,4 +1,6 @@
-﻿namespace Mycelium.Java;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+
+namespace Mycelium.Java;
 
 internal static class JavaEndpoint
 {
@@ -11,7 +13,12 @@ internal static class JavaEndpoint
     {
         var group = application.MapGroup("/java");
 
-        group.MapGet("/status/{address}", (string address) => "Hello, world!");
-        group.MapGet("/ping/{address}", (string address) => "Hello, world!");
+        group.MapGet(
+            "/status/{address}",
+            async Task<Results<Ok<StatusResponse>, ProblemHttpResult>> (string address, JavaClient client) =>
+            {
+                var result = await client.RequestStatusAsync(address);
+                return result.ToTypedResults();
+            });
     }
 }

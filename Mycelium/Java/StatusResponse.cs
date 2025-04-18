@@ -13,29 +13,29 @@ internal sealed class StatusResponse(string description, string name, int versio
     /// <summary>
     /// Server's message of the day as known as MOTD.
     /// </summary>
-    public string Description { get; } = description;
+    public string Description => description;
 
     /// <summary>
     /// Server software's name.
     /// </summary>
     /// <example>1.8.9</example>
-    public string Name { get; } = name;
+    public string Name => name;
 
     /// <summary>
     /// Supported protocol version.
     /// </summary>
     /// <example>47</example>
-    public int Version { get; } = version;
+    public int Version => version;
 
     /// <summary>
     /// Maximum player count.
     /// </summary>
-    public int Maximum { get; } = maximum;
+    public int Maximum => maximum;
 
     /// <summary>
     /// Current online player count.
     /// </summary>
-    public int Online { get; } = online;
+    public int Online => online;
 
     /// <summary>
     /// Creates a <see cref="StatusResponse"/> from a Minecraft server's status message.

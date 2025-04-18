@@ -6,17 +6,17 @@
 /// <param name="first">The <see cref="string"/> part of the address.</param>
 /// <param name="port">The port part of the address.</param>
 /// <example>mc.hypixel.net:25565</example>
-internal readonly ref struct Address(ReadOnlySpan<char> first, ushort port)
+internal readonly struct Address(string first, ushort port)
 {
     /// <summary>
     /// The <see cref="string"/> part of the address.
     /// </summary>
-    public ReadOnlySpan<char> First { get; } = first;
+    public string First => first;
 
     /// <summary>
     /// The port part of the address.
     /// </summary>
-    public ushort Port { get; } = port;
+    public ushort Port => port;
 
     /// <summary>
     /// Tries to convert a <see cref="string"/> to an <see cref="Address"/>.
@@ -54,7 +54,7 @@ internal readonly ref struct Address(ReadOnlySpan<char> first, ushort port)
             return false;
         }
 
-        address = new Address(slice, port);
+        address = new Address(slice.ToString(), port);
 
         return true;
     }
