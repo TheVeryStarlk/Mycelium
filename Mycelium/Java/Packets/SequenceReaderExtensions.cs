@@ -4,8 +4,17 @@ using System.Text;
 
 namespace Mycelium.Java.Packets;
 
+/// <summary>
+/// Provides extension methods to <see cref="SequenceReader{T}"/>.
+/// </summary>
 internal static class SequenceReaderExtensions
 {
+    /// <summary>
+    /// Tries to read a variable-<see cref="int"/> from a <see cref="SequenceReader{T}"/>.
+    /// </summary>
+    /// <param name="reader">The <see cref="SequenceReader{T}"/> to read from.</param>
+    /// <param name="value">The read <see cref="int"/> value.</param>
+    /// <returns>True if the variable-<see cref="int"/> was converted successfully, otherwise, false.</returns>
     public static bool TryReadVariableInteger(ref this SequenceReader<byte> reader, out int value)
     {
         var numbersRead = 0;
@@ -42,6 +51,12 @@ internal static class SequenceReaderExtensions
         return true;
     }
 
+    /// <summary>
+    /// Tries to read a variable-<see cref="int"/> prefixed <see cref="string"/> from a <see cref="SequenceReader{T}"/>.
+    /// </summary>
+    /// <param name="reader">The <see cref="SequenceReader{T}"/> to read from.</param>
+    /// <param name="value">The read <see cref="string"/> value.</param>
+    /// <returns>True if the <see cref="string"/> was converted successfully, otherwise, false.</returns>
     public static bool TryReadVariableString(ref this SequenceReader<byte> reader, [NotNullWhen(true)] out string? value)
     {
         value = null;

@@ -19,9 +19,9 @@ internal sealed class JavaClient(ILogger<JavaClient> logger, IMemoryCache cache)
     private readonly SocketConnectionContextFactory factory = new(new SocketConnectionFactoryOptions(), logger);
 
     /// <summary>
-    /// Performs a status request to the given <see cref="input"/> address.
+    /// Performs a status request to the given input address.
     /// </summary>
-    /// <param name="input">The <see cref="input"/> address to request status from.</param>
+    /// <param name="input">The input address to request status from.</param>
     /// <returns>A <see cref="Result"/> containing the <see cref="StatusResponse"/>.</returns>
     public async Task<Result<StatusResponse>> RequestStatusAsync(string input)
     {
@@ -51,10 +51,10 @@ internal sealed class JavaClient(ILogger<JavaClient> logger, IMemoryCache cache)
     }
 
     /// <summary>
-    /// Creates a TCP <see cref="ConnectionContext"/> to the given <see cref="address"/> and <see cref="port"/>.
+    /// Creates a TCP <see cref="ConnectionContext"/> to the given address and port.
     /// </summary>
-    /// <param name="address">The <see cref="address"/> to connect to.</param>
-    /// <param name="port">The <see cref="port"/> to connect to.</param>
+    /// <param name="address">The address to connect to.</param>
+    /// <param name="port">The port to connect to.</param>
     /// <returns>A <see cref="Result"/> containing the TCP <see cref="ConnectionContext"/>.</returns>
     private async Task<Result<ConnectionContext>> ConnectAsync(string address, ushort port)
     {
@@ -82,9 +82,9 @@ internal sealed class JavaClient(ILogger<JavaClient> logger, IMemoryCache cache)
     }
 
     /// <summary>
-    /// Resolves DNS host of a given <see cref="address"/>.
+    /// Resolves DNS host of a given address.
     /// </summary>
-    /// <param name="address">The <see cref="address"/> to resolve DNS from.</param>
+    /// <param name="address">The address to resolve DNS from.</param>
     /// <returns>A <see cref="Result"/> containing the DNS resolved <see cref="IPAddress"/>.</returns>
     private async Task<Result<IPAddress>> ResolveHostAsync(string address)
     {
