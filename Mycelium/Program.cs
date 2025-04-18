@@ -4,7 +4,7 @@ using Mycelium.Java;
 var builder = WebApplication.CreateSlimBuilder(args);
 
 builder.Services.ConfigureHttpJsonOptions(options => options.SerializerOptions.TypeInfoResolverChain.Insert(0, MyceliumJsonSerializerContext.Default));
-builder.Services.AddMemoryCache(options => options.ExpirationScanFrequency = TimeSpan.FromMinutes(1));
+builder.Services.AddMemoryCache(options => options.ExpirationScanFrequency = TimeSpan.FromSeconds(500));
 builder.Services.AddProblemDetails();
 
 builder.Services.AddJava();

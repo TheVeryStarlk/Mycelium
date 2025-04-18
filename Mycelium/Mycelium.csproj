@@ -8,4 +8,8 @@
 		<PublishAot>true</PublishAot>
 	</PropertyGroup>
 
+	<ItemGroup>
+		<PackageReference Include="LightResults" Version="9.0.2"/>
+	</ItemGroup>
+
 </Project>
