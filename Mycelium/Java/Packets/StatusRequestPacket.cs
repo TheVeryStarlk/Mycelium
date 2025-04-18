@@ -29,22 +29,20 @@ internal static class StatusRequestPacket
 
         span[index++] = 0;
 
-        Span<byte> version =
-        [
-            byte.MaxValue,
-            byte.MaxValue,
-            byte.MaxValue,
-            byte.MaxValue,
-            15
-        ];
-
-        version.CopyTo(span[index..(index += 5)]);
+        // Version.
+        span[index++] = byte.MaxValue;
+        span[index++] = byte.MaxValue;
+        span[index++] = byte.MaxValue;
+        span[index++] = byte.MaxValue;
+        span[index++] = 15;
 
         index += Variable.Write(span[index..], address);
 
         BinaryPrimitives.WriteUInt16BigEndian(span[index..(index += sizeof(ushort))], port);
 
         span[index++] = 1;
+
+        // Status request packet.
         span[index++] = 1;
         span[index++] = 0;
 

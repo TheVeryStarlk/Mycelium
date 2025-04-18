@@ -1,4 +1,5 @@
 using Mycelium;
+using Mycelium.Bedrock;
 using Mycelium.Java;
 
 var builder = WebApplication.CreateSlimBuilder(args);
@@ -9,6 +10,7 @@ builder.Services.AddMemoryCache(options => options.ExpirationScanFrequency = Tim
 builder.Services.AddProblemDetails();
 
 builder.Services.AddJava();
+builder.Services.AddBedrock();
 
 var application = builder.Build();
 
@@ -17,5 +19,6 @@ application.UseStatusCodePages();
 application.UseHttpsRedirection();
 
 application.MapJava();
+application.MapBedrock();
 
 application.Run();

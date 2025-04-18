@@ -3,12 +3,12 @@
 namespace Mycelium.Java;
 
 /// <summary>
-/// Handles registering and mapping all Minecraft Java related services and endpoints.
+/// Handles registering and mapping all Minecraft Java edition related services and endpoints.
 /// </summary>
 internal static class JavaEndpoint
 {
     /// <summary>
-    /// Registers all Minecraft Java services.
+    /// Registers all Minecraft Java edition services.
     /// </summary>
     /// <param name="services">The <see cref="IServiceCollection"/> to add the services to.</param>
     public static void AddJava(this IServiceCollection services)
@@ -17,7 +17,7 @@ internal static class JavaEndpoint
     }
 
     /// <summary>
-    /// Maps all Minecraft Java endpoints.
+    /// Maps all Minecraft Java edition endpoints.
     /// </summary>
     /// <param name="application">The <see cref="WebApplication"/> to add the endpoints to.</param>
     public static void MapJava(this WebApplication application)
