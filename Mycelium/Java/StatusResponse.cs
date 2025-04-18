@@ -1,4 +1,6 @@
-﻿namespace Mycelium.Java;
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace Mycelium.Java;
 
 /// <summary>
 /// Represents a Minecraft server status.
@@ -43,8 +45,10 @@ internal sealed class StatusResponse(string description, string name, int versio
     /// <param name="input">The Minecraft server status message.</param>
     /// <returns>The created <see cref="StatusResponse"/>.</returns>
     /// <remarks>https://minecraft.wiki/w/Minecraft_Wiki:Projects/wiki.vg_merge/Server_List_Ping#Status_Response</remarks>
-    public static StatusResponse Create(ReadOnlySpan<byte> input)
+    public static bool TryCreate(ReadOnlySpan<byte> input, [NotNullWhen(true)] out StatusResponse? response)
     {
-        return new StatusResponse(string.Empty, string.Empty, 0, 0, 0);
+        // Refactor to use JSON writer.
+        response = null;
+        return false;
     }
 }
