@@ -6,36 +6,32 @@ internal readonly ref struct Address(ReadOnlySpan<char> first, ushort port)
 
     public ushort Port { get; } = port;
 
-    private const char Separator = ':';
-
     public static bool TryParse(string input, out Address address)
     {
+        const char separator = ':';
+
         address = default;
 
         var span = input.AsSpan();
 
-        if (span.Count(Separator) > 1)
+        if (span.Count(separator) > 1)
         {
             return false;
         }
 
-        var index = span.IndexOf(Separator);
+        var index = span.IndexOf(separator) + 1;
 
-        if (index + 1 >= span.Length)
+        if (index >= span.Length)
         {
             return false;
         }
-
-        index++;
 
         if (!ushort.TryParse(span[index..], out var port) || index - 1 < 0)
         {
             return false;
         }
 
-        index--;
-
-        var slice = span[..index];
+        var slice = span[..(index - 1)];
 
         if (slice.Length < 1)
         {
