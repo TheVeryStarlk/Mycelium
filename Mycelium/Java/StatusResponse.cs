@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using System.Text.Json.Nodes;
 
 namespace Mycelium.Java;
 
@@ -10,18 +11,18 @@ namespace Mycelium.Java;
 /// <param name="version">Supported protocol version.</param>
 /// <param name="maximum">Maximum player count.</param>
 /// <param name="online">Current online player count.</param>
-internal sealed class StatusResponse(string description, string name, int version, int maximum, int online)
+internal sealed class StatusResponse(string? description, string? name, int version, int maximum, int online)
 {
     /// <summary>
     /// Server's message of the day as known as MOTD.
     /// </summary>
-    public string Description => description;
+    public string? Description => description;
 
     /// <summary>
     /// Server software's name.
     /// </summary>
     /// <example>1.8.9</example>
-    public string Name => name;
+    public string? Name => name;
 
     /// <summary>
     /// Supported protocol version.
@@ -40,15 +41,27 @@ internal sealed class StatusResponse(string description, string name, int versio
     public int Online => online;
 
     /// <summary>
-    /// Creates a <see cref="StatusResponse"/> from a Minecraft server's status message.
+    /// Tries to read a <see cref="StatusResponse"/> from a <see cref="string"/>.
     /// </summary>
-    /// <param name="input">The Minecraft server status message.</param>
-    /// <returns>The created <see cref="StatusResponse"/>.</returns>
-    /// <remarks>https://minecraft.wiki/w/Minecraft_Wiki:Projects/wiki.vg_merge/Server_List_Ping#Status_Response</remarks>
-    public static bool TryCreate(ReadOnlySpan<byte> input, [NotNullWhen(true)] out StatusResponse? response)
+    /// <param name="input">The <see cref="string"/> to read from.</param>
+    /// <param name="response">The result <see cref="StatusResponse"/>.</param>
+    /// <returns>True if the <see cref="string"/> was converted successfully, otherwise, false.</returns>
+    public static bool TryCreate(string input, [NotNullWhen(true)] out StatusResponse? response)
     {
-        // Refactor to use JSON writer.
-        response = null;
-        return false;
+        // Refactor this to use JSON reader.
+        var node = JsonNode.Parse(input)!;
+
+        var version = node["version"];
+        var players = node["players"];
+        var description = node["description"];
+
+        response = new StatusResponse(
+            description?.ToString(),
+            version?["name"]?.ToString(),
+            version?["protocol"]?.GetValue<int>() ?? 0,
+            players?["max"]?.GetValue<int>() ?? 0,
+            players?["online"]?.GetValue<int>() ?? 0);
+
+        return true;
     }
 }

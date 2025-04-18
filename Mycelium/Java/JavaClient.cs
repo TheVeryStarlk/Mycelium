@@ -35,19 +35,25 @@ internal sealed class JavaClient(ILogger<JavaClient> logger, IMemoryCache cache)
             return Result.Success(response!);
         }
 
-        var result = await ConnectAsync(address.First, address.Port);
+        var connecting = await ConnectAsync(address.First, address.Port);
 
-        if (!result.IsSuccess(out var connection))
+        if (!connecting.IsSuccess(out var connection))
         {
-            return result.AsFailure<StatusResponse>();
+            return connecting.AsFailure<StatusResponse>();
         }
 
         await StatusRequestPacket.WriteAsync(connection.Transport.Output, address.First, address.Port);
-        var status = await StatusResponsePacket.ReadAsync(connection.Transport.Input);
 
-        // response = cache.Set(input, StatusResponse.Create([]));
+        var reading = await StatusResponsePacket.ReadAsync(connection.Transport.Input);
 
-        return Result.Success(response);
+        if (!reading.IsSuccess(out var status))
+        {
+            return reading.AsFailure<StatusResponse>();
+        }
+
+        return StatusResponse.TryCreate(status, out response)
+            ? Result.Success(cache.Set(input, response))
+            : Result.Failure<StatusResponse>("Could not read status response.");
     }
 
     /// <summary>
