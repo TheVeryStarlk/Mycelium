@@ -22,7 +22,7 @@ internal readonly struct Address(string first, ushort port)
     /// Tries to convert a <see cref="string"/> to an <see cref="Address"/>.
     /// </summary>
     /// <param name="input">The <see cref="string"/> to convert.</param>
-    /// <param name="address">The <see cref="Address"/> resulting address.</param>
+    /// <param name="address">The <see cref="Address"/> resulting <see cref="address"/>.</param>
     /// <returns>True if the <see cref="string"/> was converted successfully, otherwise, false.</returns>
     public static bool TryParse(ReadOnlySpan<char> input, out Address address)
     {
