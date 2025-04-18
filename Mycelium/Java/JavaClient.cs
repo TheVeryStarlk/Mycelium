@@ -43,7 +43,7 @@ internal sealed class JavaClient(ILogger<JavaClient> logger, IMemoryCache cache)
 
         response = cache.Set(input, StatusResponse.Create([]));
 
-        return Result.Success(response!);
+        return Result.Success(response);
     }
 
     /// <summary>
