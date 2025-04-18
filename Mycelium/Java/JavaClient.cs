@@ -35,7 +35,15 @@ internal sealed class JavaClient(ILogger<JavaClient> logger, IMemoryCache cache)
         }
 
         var result = await ConnectAsync(address.First, address.Port);
-        return !result.IsSuccess(out _) ? result.AsFailure<StatusResponse>() : Result.Success(StatusResponse.Create([]));
+
+        if (!result.IsSuccess(out _))
+        {
+            return result.AsFailure<StatusResponse>();
+        }
+
+        response = cache.Set(input, StatusResponse.Create([]));
+
+        return Result.Success(response!);
     }
 
     /// <summary>

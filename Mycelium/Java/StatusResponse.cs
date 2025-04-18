@@ -45,6 +45,6 @@ internal sealed class StatusResponse(string description, string name, int versio
     /// <remarks>https://minecraft.wiki/w/Minecraft_Wiki:Projects/wiki.vg_merge/Server_List_Ping#Status_Response</remarks>
     public static StatusResponse Create(ReadOnlySpan<byte> input)
     {
-        throw new InvalidOperationException("Wait!");
+        return new StatusResponse(string.Empty, string.Empty, 0, 0, 0);
     }
 }
