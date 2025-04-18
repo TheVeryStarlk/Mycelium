@@ -15,6 +15,8 @@ namespace Mycelium.Features.Java;
 /// <param name="cache">The <see cref="IMemoryCache"/> used for caching <see cref="StatusResponse"/>s.</param>
 internal sealed class JavaClient(ILogger<JavaClient> logger, IMemoryCache cache)
 {
+    private const string Prefix = "Java";
+
     // https://github.com/dotnet/aspnetcore/blob/c22a8530ee463bf3534ce5fc54f991e8ab1e9ee0/src/Servers/Kestrel/Transport.Sockets/src/SocketConnectionListener.cs#L31.
     private readonly SocketConnectionContextFactory factory = new(new SocketConnectionFactoryOptions(), logger);
 
@@ -30,7 +32,7 @@ internal sealed class JavaClient(ILogger<JavaClient> logger, IMemoryCache cache)
             return Result.Failure<StatusResponse>("Invalid address.");
         }
 
-        if (cache.TryGetValue($"Java{input}", out StatusResponse? response))
+        if (cache.TryGetValue($"{Prefix}{input}", out StatusResponse? response))
         {
             return Result.Success(response!);
         }
@@ -52,7 +54,7 @@ internal sealed class JavaClient(ILogger<JavaClient> logger, IMemoryCache cache)
         }
 
         return StatusResponse.TryCreate(status, out response)
-            ? Result.Success(cache.Set($"Java{input}", response))
+            ? Result.Success(cache.Set($"{Prefix}{input}", response))
             : Result.Failure<StatusResponse>("Could not read status response.");
     }
 
