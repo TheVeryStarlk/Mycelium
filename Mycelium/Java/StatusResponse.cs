@@ -7,7 +7,7 @@
 /// <param name="version">Supported protocol version.</param>
 /// <param name="maximum">Maximum player count.</param>
 /// <param name="online">Current online player count.</param>
-public sealed class StatusResponse(string name, int version, int maximum, int online)
+internal sealed class StatusResponse(string name, int version, int maximum, int online)
 {
     /// <summary>
     /// Server software's name.
