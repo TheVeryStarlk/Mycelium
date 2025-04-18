@@ -1,3 +1,4 @@
+using Mycelium;
 using Mycelium.Java;
 
 var builder = WebApplication.CreateSlimBuilder(args);

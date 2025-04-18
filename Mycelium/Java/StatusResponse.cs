@@ -3,16 +3,22 @@
 /// <summary>
 /// Represents a Minecraft server status.
 /// </summary>
+/// <param name="description">Server's message of the day as known as MOTD.</param>
 /// <param name="name">Server software's name.</param>
 /// <param name="version">Supported protocol version.</param>
 /// <param name="maximum">Maximum player count.</param>
 /// <param name="online">Current online player count.</param>
-internal sealed class StatusResponse(string name, int version, int maximum, int online)
+internal sealed class StatusResponse(string description, string name, int version, int maximum, int online)
 {
+    /// <summary>
+    /// Server's message of the day as known as MOTD.
+    /// </summary>
+    public string Description { get; } = description;
+
     /// <summary>
     /// Server software's name.
     /// </summary>
-    /// <example>Bukkit</example>
+    /// <example>1.8.9</example>
     public string Name { get; } = name;
 
     /// <summary>
@@ -37,8 +43,8 @@ internal sealed class StatusResponse(string name, int version, int maximum, int 
     /// <param name="input">The Minecraft server status message.</param>
     /// <returns>The created <see cref="StatusResponse"/>.</returns>
     /// <remarks>https://minecraft.wiki/w/Minecraft_Wiki:Projects/wiki.vg_merge/Server_List_Ping#Status_Response</remarks>
-    public static StatusResponse Create(string input)
+    public static StatusResponse Create(ReadOnlySpan<byte> input)
     {
-        return new StatusResponse("Hello, world!", 47, 10, 0);
+        throw new InvalidOperationException("Wait!");
     }
 }
