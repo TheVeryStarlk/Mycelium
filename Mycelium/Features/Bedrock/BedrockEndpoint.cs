@@ -1,4 +1,4 @@
-﻿namespace Mycelium.Bedrock;
+﻿namespace Mycelium.Features.Bedrock;
 
 /// <summary>
 /// Handles registering and mapping all Minecraft Bedrock edition related services and endpoints.

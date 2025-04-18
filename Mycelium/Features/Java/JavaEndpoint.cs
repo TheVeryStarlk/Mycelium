@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
 
-namespace Mycelium.Java;
+namespace Mycelium.Features.Java;
 
 /// <summary>
 /// Handles registering and mapping all Minecraft Java edition related services and endpoints.

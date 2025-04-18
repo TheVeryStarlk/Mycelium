@@ -1,7 +1,7 @@
 ﻿using System.Numerics;
 using System.Text;
 
-namespace Mycelium.Java.Packets;
+namespace Mycelium.Features.Java.Packets;
 
 /// <summary>
 /// Provides methods for reading/writing variable types.

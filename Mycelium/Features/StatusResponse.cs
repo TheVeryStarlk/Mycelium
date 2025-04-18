@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Nodes;
 
-namespace Mycelium.Java;
+namespace Mycelium.Features;
 
 /// <summary>
 /// Represents a Minecraft server status.

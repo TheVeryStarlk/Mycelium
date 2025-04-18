@@ -4,9 +4,9 @@ using LightResults;
 using Microsoft.AspNetCore.Connections;
 using Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets;
 using Microsoft.Extensions.Caching.Memory;
-using Mycelium.Java.Packets;
+using Mycelium.Features.Java.Packets;
 
-namespace Mycelium.Java;
+namespace Mycelium.Features.Java;
 
 /// <summary>
 /// Represents a simple Minecraft Java edition client.

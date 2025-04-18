@@ -1,6 +1,6 @@
 using Mycelium;
-using Mycelium.Bedrock;
-using Mycelium.Java;
+using Mycelium.Features.Bedrock;
+using Mycelium.Features.Java;
 
 var builder = WebApplication.CreateSlimBuilder(args);
 

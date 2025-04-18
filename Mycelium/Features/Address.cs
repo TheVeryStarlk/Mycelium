@@ -1,4 +1,4 @@
-﻿namespace Mycelium.Java;
+﻿namespace Mycelium.Features;
 
 /// <summary>
 /// Represents a Minecraft address.

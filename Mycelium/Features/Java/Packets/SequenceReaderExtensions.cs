@@ -2,7 +2,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
 
-namespace Mycelium.Java.Packets;
+namespace Mycelium.Features.Java.Packets;
 
 /// <summary>
 /// Provides extension methods to <see cref="SequenceReader{T}"/>.

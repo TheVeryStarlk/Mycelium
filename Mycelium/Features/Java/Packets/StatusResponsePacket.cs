@@ -3,7 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO.Pipelines;
 using LightResults;
 
-namespace Mycelium.Java.Packets;
+namespace Mycelium.Features.Java.Packets;
 
 /// <summary>
 /// Represents a Minecraft status response packet.

@@ -1,7 +1,7 @@
 ﻿using LightResults;
 using Microsoft.AspNetCore.Http.HttpResults;
 
-namespace Mycelium.Java;
+namespace Mycelium.Features;
 
 /// <summary>
 /// Provides helpful extensions for <see cref="Result"/>.

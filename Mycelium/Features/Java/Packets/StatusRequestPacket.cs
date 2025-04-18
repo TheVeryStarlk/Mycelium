@@ -1,7 +1,7 @@
 ﻿using System.Buffers.Binary;
 using System.IO.Pipelines;
 
-namespace Mycelium.Java.Packets;
+namespace Mycelium.Features.Java.Packets;
 
 /// <summary>
 /// Represents a Minecraft status request packet.
