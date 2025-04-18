@@ -43,6 +43,7 @@ internal sealed class JavaClient(ILogger<JavaClient> logger, IMemoryCache cache)
         }
 
         await StatusRequestPacket.WriteAsync(connection.Transport.Output, address.First, address.Port);
+        var status = await StatusResponsePacket.ReadAsync(connection.Transport.Input);
 
         response = cache.Set(input, StatusResponse.Create([]));
 
