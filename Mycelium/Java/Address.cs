@@ -24,32 +24,30 @@ internal readonly ref struct Address(ReadOnlySpan<char> first, ushort port)
     /// <param name="input">The <see cref="string"/> to convert.</param>
     /// <param name="address">The <see cref="Address"/> resulting address.</param>
     /// <returns>True if the <see cref="string"/> was converted successfully, otherwise, false.</returns>
-    public static bool TryParse(string input, out Address address)
+    public static bool TryParse(ReadOnlySpan<char> input, out Address address)
     {
         const char separator = ':';
 
         address = default;
 
-        var span = input.AsSpan();
-
-        if (span.Count(separator) > 1)
+        if (input.Count(separator) > 1)
         {
             return false;
         }
 
-        var index = span.IndexOf(separator) + 1;
+        var index = input.IndexOf(separator) + 1;
 
-        if (index >= span.Length)
+        if (index >= input.Length)
         {
             return false;
         }
 
-        if (!ushort.TryParse(span[index..], out var port) || index - 1 < 0)
+        if (!ushort.TryParse(input[index..], out var port) || index - 1 < 0)
         {
             return false;
         }
 
-        var slice = span[..(index - 1)];
+        var slice = input[..(index - 1)];
 
         if (slice.Length < 1)
         {
