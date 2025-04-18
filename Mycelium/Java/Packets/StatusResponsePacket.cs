@@ -1,6 +1,7 @@
 ﻿using System.Buffers;
 using System.Diagnostics.CodeAnalysis;
 using System.IO.Pipelines;
+using LightResults;
 
 namespace Mycelium.Java.Packets;
 
@@ -15,7 +16,7 @@ internal static class StatusResponsePacket
     /// <param name="input">The <see cref="PipeReader"/> to read from.</param>
     /// <returns>A <see cref="ValueTask"/> representing the asynchronous read operation.</returns>
     /// <exception cref="InvalidDataException">Incomplete packet.</exception>
-    public static async ValueTask<string?> ReadAsync(PipeReader input)
+    public static async ValueTask<Result<string>> ReadAsync(PipeReader input)
     {
         while (true)
         {
@@ -40,7 +41,7 @@ internal static class StatusResponsePacket
                 {
                     if (buffer.Length > 0)
                     {
-                        throw new InvalidDataException("Incomplete packet.");
+                        return Result.Failure<string>("Incomplete packet.");
                     }
 
                     break;
@@ -52,8 +53,7 @@ internal static class StatusResponsePacket
             }
         }
 
-        return null;
-
+        return Result.Failure<string>("Failed to read the packet.");
     }
 
     /// <summary>
