@@ -15,4 +15,35 @@ internal static class Variable
         var length = Encoding.UTF8.GetByteCount(value);
         return GetByteCount(length) + length;
     }
+
+    public static int Write(Span<byte> span, int value)
+    {
+        var index = 0;
+        var unsigned = (uint) value;
+
+        do
+        {
+            var current = (byte) (unsigned & 127);
+            unsigned >>= 7;
+
+            if (unsigned != 0)
+            {
+                current |= 128;
+            }
+
+            span[index++] = current;
+        } while (unsigned != 0);
+
+        return index;
+    }
+
+    public static int Write(Span<byte> span, string value)
+    {
+        var index = 0;
+
+        index += Write(span, Encoding.UTF8.GetByteCount(value));
+        index += Encoding.UTF8.GetBytes(value, span[index..]);
+
+        return index;
+    }
 }
