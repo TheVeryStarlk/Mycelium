@@ -22,3 +22,4 @@ An example of a Java server status response.
 * Refactor status response to use JSON reader.
 * Implement pinging.
 * Add support for Bedrock edition.
+* Write tests.
