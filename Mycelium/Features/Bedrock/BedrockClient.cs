@@ -1,3 +1,5 @@
-﻿namespace Mycelium.Features.Bedrock;
+﻿using Microsoft.Extensions.Caching.Memory;
 
-internal sealed class BedrockClient;
+namespace Mycelium.Features.Bedrock;
+
+internal sealed class BedrockClient(ILogger<BedrockClient> logger, IMemoryCache cache);
