@@ -4,7 +4,7 @@ internal static class JavaEndpoint
 {
     public static void AddJava(this IServiceCollection services)
     {
-
+        services.AddTransient<JavaClient>();
     }
 
     public static void MapJava(this WebApplication application)
