@@ -4,6 +4,7 @@ using LightResults;
 using Microsoft.AspNetCore.Connections;
 using Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets;
 using Microsoft.Extensions.Caching.Memory;
+using Mycelium.Java.Packets;
 
 namespace Mycelium.Java;
 
@@ -36,10 +37,12 @@ internal sealed class JavaClient(ILogger<JavaClient> logger, IMemoryCache cache)
 
         var result = await ConnectAsync(address.First, address.Port);
 
-        if (!result.IsSuccess(out _))
+        if (!result.IsSuccess(out var connection))
         {
             return result.AsFailure<StatusResponse>();
         }
+
+        await StatusRequestPacket.WriteAsync(connection.Transport.Output, address.First, address.Port);
 
         response = cache.Set(input, StatusResponse.Create([]));
 
