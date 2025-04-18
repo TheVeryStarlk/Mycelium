@@ -1,6 +1,0 @@
-@Mycelium_HostAddress = http://localhost:5168
-
-GET {{Mycelium_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
