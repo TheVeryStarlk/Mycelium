@@ -1,6 +1,4 @@
-﻿using System.Net.Sockets;
-using LightResults;
-using Microsoft.AspNetCore.Connections;
+﻿using LightResults;
 using Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets;
 using Microsoft.Extensions.Caching.Memory;
 using Mycelium.Features.Java.Packets;
@@ -12,10 +10,10 @@ namespace Mycelium.Features.Java;
 /// </summary>
 /// <param name="logger">The <see cref="ILogger"/> used to log actions.</param>
 /// <param name="cache">The <see cref="IMemoryCache"/> used for caching <see cref="StatusResponse"/>s.</param>
-internal sealed class JavaClient(ILogger<JavaClient> logger, IMemoryCache cache)
+internal sealed class JavaClient(ILogger<JavaClient> logger, IMemoryCache cache, SocketFactory factory)
 {
     // https://github.com/dotnet/aspnetcore/blob/c22a8530ee463bf3534ce5fc54f991e8ab1e9ee0/src/Servers/Kestrel/Transport.Sockets/src/SocketConnectionListener.cs#L31.
-    private readonly SocketConnectionContextFactory factory = new(new SocketConnectionFactoryOptions(), logger);
+    private readonly SocketConnectionContextFactory connectionContextFactory = new(new SocketConnectionFactoryOptions(), logger);
 
     /// <summary>
     /// Performs a status request to the given input address.
@@ -35,19 +33,18 @@ internal sealed class JavaClient(ILogger<JavaClient> logger, IMemoryCache cache)
             return Result.Success(response!);
         }
 
-        var connecting = await ConnectAsync(address.First, address.Port, token);
+        var connecting = await factory.ConnectAsync(Edition.Java, address.First, address.Port, token);
 
-        if (!connecting.IsSuccess(out var connection))
+        if (!connecting.IsSuccess(out var socket))
         {
             return connecting.AsFailure<StatusResponse>();
         }
 
+        await using var connection = connectionContextFactory.Create(socket);
+
         await StatusRequestPacket.WriteAsync(connection.Transport.Output, address.First, address.Port, token);
 
         var reading = await StatusResponsePacket.ReadAsync(connection.Transport.Input, token);
-
-        // Disposes of the socket as well.
-        connection.Abort();
 
         if (!reading.IsSuccess(out var status))
         {
@@ -57,35 +54,5 @@ internal sealed class JavaClient(ILogger<JavaClient> logger, IMemoryCache cache)
         return StatusResponse.TryCreate(Edition.Java, status, out response)
             ? Result.Success(cache.Set($"{Edition.Java}{input}", response))
             : Result.Failure<StatusResponse>("Could not read status response.");
-    }
-
-    /// <summary>
-    /// Creates a TCP <see cref="ConnectionContext"/> to the given address and port.
-    /// </summary>
-    /// <param name="address">The address to connect to.</param>
-    /// <param name="port">The port to connect to.</param>
-    /// <param name="token">A <see cref="CancellationToken"/> that can be used to cancel the asynchronous operation.</param>
-    /// <returns>A <see cref="Result"/> containing the TCP <see cref="ConnectionContext"/>.</returns>
-    private async Task<Result<ConnectionContext>> ConnectAsync(string address, ushort port, CancellationToken token)
-    {
-        var resolving = await HostUtility.ResolveHostAsync(address, token);
-
-        if (!resolving.IsSuccess(out var host))
-        {
-            return resolving.AsFailure<ConnectionContext>();
-        }
-
-        var socket = new Socket(host.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-
-        try
-        {
-            await socket.ConnectAsync(host, port, token);
-        }
-        catch (SocketException)
-        {
-            return Result.Failure<ConnectionContext>("Failed to connect to the server.");
-        }
-
-        return factory.Create(socket);
     }
 }

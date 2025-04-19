@@ -1,4 +1,5 @@
 using Mycelium;
+using Mycelium.Features;
 using Mycelium.Features.Bedrock;
 using Mycelium.Features.Java;
 
@@ -8,6 +9,8 @@ builder.Services.ConfigureHttpJsonOptions(options => options.SerializerOptions.T
 
 builder.Services.AddMemoryCache(options => options.ExpirationScanFrequency = TimeSpan.FromSeconds(500));
 builder.Services.AddProblemDetails();
+
+builder.Services.AddSingleton<SocketFactory>();
 
 builder.Services.AddJava();
 builder.Services.AddBedrock();
