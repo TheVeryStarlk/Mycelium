@@ -16,8 +16,9 @@ internal sealed class BedrockClient(ILogger<BedrockClient> logger, IMemoryCache 
     /// Performs a status request to the given input address.
     /// </summary>
     /// <param name="input">The input address to request status from.</param>
+    /// <param name="token">A <see cref="CancellationToken"/> that can be used to cancel the asynchronous operation.</param>
     /// <returns>A <see cref="Result"/> containing the <see cref="StatusResponse"/>.</returns>
-    public async Task<Result<StatusResponse>> RequestStatusAsync(string input)
+    public async Task<Result<StatusResponse>> RequestStatusAsync(string input, CancellationToken token)
     {
         if (!Address.TryParse(input, out var address))
         {
@@ -29,16 +30,16 @@ internal sealed class BedrockClient(ILogger<BedrockClient> logger, IMemoryCache 
             return Result.Success(response!);
         }
 
-        var connecting = await ConnectAsync(address.First, address.Port);
+        var connecting = await ConnectAsync(address.First, address.Port, token);
 
         if (!connecting.IsSuccess(out var connection))
         {
             return connecting.AsFailure<StatusResponse>();
         }
 
-        await connection.SendAsync(RakNet.UnconnectedPingPacket.AsMemory());
+        await connection.SendAsync(RakNet.UnconnectedPingPacket.AsMemory(), token);
 
-        var reading = await UnconnectedPongPacket.ReadAsync(connection);
+        var reading = await UnconnectedPongPacket.ReadAsync(connection, token);
 
         connection.Dispose();
 
@@ -57,10 +58,11 @@ internal sealed class BedrockClient(ILogger<BedrockClient> logger, IMemoryCache 
     /// </summary>
     /// <param name="address">The address to connect to.</param>
     /// <param name="port">The port to connect to.</param>
+    /// <param name="token">A <see cref="CancellationToken"/> that can be used to cancel the asynchronous operation.</param>
     /// <returns>A <see cref="Result"/> containing the UDP <see cref="Socket"/>.</returns>
-    private async Task<Result<Socket>> ConnectAsync(string address, ushort port)
+    private async Task<Result<Socket>> ConnectAsync(string address, ushort port, CancellationToken token)
     {
-        var resolving = await HostUtility.ResolveHostAsync(address);
+        var resolving = await HostUtility.ResolveHostAsync(address, token);
 
         if (!resolving.IsSuccess(out var host))
         {
@@ -72,7 +74,7 @@ internal sealed class BedrockClient(ILogger<BedrockClient> logger, IMemoryCache 
         try
         {
             // This "doesn't" actually create a connection.
-            await socket.ConnectAsync(host, port);
+            await socket.ConnectAsync(host, port, token);
         }
         catch (Exception exception)
         {

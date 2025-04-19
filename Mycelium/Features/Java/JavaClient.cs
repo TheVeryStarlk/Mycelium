@@ -21,8 +21,9 @@ internal sealed class JavaClient(ILogger<JavaClient> logger, IMemoryCache cache)
     /// Performs a status request to the given input address.
     /// </summary>
     /// <param name="input">The input address to request status from.</param>
+    /// <param name="token">A <see cref="CancellationToken"/> that can be used to cancel the asynchronous operation.</param>
     /// <returns>A <see cref="Result"/> containing the <see cref="StatusResponse"/>.</returns>
-    public async Task<Result<StatusResponse>> RequestStatusAsync(string input)
+    public async Task<Result<StatusResponse>> RequestStatusAsync(string input, CancellationToken token)
     {
         if (!Address.TryParse(input, out var address))
         {
@@ -34,16 +35,16 @@ internal sealed class JavaClient(ILogger<JavaClient> logger, IMemoryCache cache)
             return Result.Success(response!);
         }
 
-        var connecting = await ConnectAsync(address.First, address.Port);
+        var connecting = await ConnectAsync(address.First, address.Port, token);
 
         if (!connecting.IsSuccess(out var connection))
         {
             return connecting.AsFailure<StatusResponse>();
         }
 
-        await StatusRequestPacket.WriteAsync(connection.Transport.Output, address.First, address.Port);
+        await StatusRequestPacket.WriteAsync(connection.Transport.Output, address.First, address.Port, token);
 
-        var reading = await StatusResponsePacket.ReadAsync(connection.Transport.Input);
+        var reading = await StatusResponsePacket.ReadAsync(connection.Transport.Input, token);
 
         // Disposes of the socket as well.
         connection.Abort();
@@ -63,10 +64,11 @@ internal sealed class JavaClient(ILogger<JavaClient> logger, IMemoryCache cache)
     /// </summary>
     /// <param name="address">The address to connect to.</param>
     /// <param name="port">The port to connect to.</param>
+    /// <param name="token">A <see cref="CancellationToken"/> that can be used to cancel the asynchronous operation.</param>
     /// <returns>A <see cref="Result"/> containing the TCP <see cref="ConnectionContext"/>.</returns>
-    private async Task<Result<ConnectionContext>> ConnectAsync(string address, ushort port)
+    private async Task<Result<ConnectionContext>> ConnectAsync(string address, ushort port, CancellationToken token)
     {
-        var resolving = await HostUtility.ResolveHostAsync(address);
+        var resolving = await HostUtility.ResolveHostAsync(address, token);
 
         if (!resolving.IsSuccess(out var host))
         {
@@ -77,7 +79,7 @@ internal sealed class JavaClient(ILogger<JavaClient> logger, IMemoryCache cache)
 
         try
         {
-            await socket.ConnectAsync(host, port);
+            await socket.ConnectAsync(host, port, token);
         }
         catch (Exception exception)
         {

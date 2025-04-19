@@ -14,7 +14,8 @@ internal static class StatusRequestPacket
     /// <param name="output">The <see cref="PipeWriter"/> to write to.</param>
     /// <param name="address">The address used in the handshake packet.</param>
     /// <param name="port">The port used in the handshake packet.</param>
-    public static async ValueTask WriteAsync(PipeWriter output, string address, ushort port)
+    /// <param name="token">A <see cref="CancellationToken"/> that can be used to cancel the asynchronous operation.</param>
+    public static async ValueTask WriteAsync(PipeWriter output, string address, ushort port, CancellationToken token)
     {
         // Handshake packet only.
         var length = Variable.GetByteCount(address) + sizeof(ushort) + 7;
@@ -47,6 +48,6 @@ internal static class StatusRequestPacket
         span[index++] = 0;
 
         output.Advance(index);
-        await output.FlushAsync();
+        await output.FlushAsync(token);
     }
 }

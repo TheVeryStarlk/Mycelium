@@ -14,18 +14,19 @@ internal static class UnconnectedPongPacket
     /// Reads an unconnected pong's status response.
     /// </summary>
     /// <param name="connection">The <see cref="Socket"/> to read from.</param>
+    /// <param name="token">A <see cref="CancellationToken"/> that can be used to cancel the asynchronous operation.</param>
     /// <returns>The read status.</returns>
-    public static async Task<Result<string>> ReadAsync(Socket connection)
+    public static async Task<Result<string>> ReadAsync(Socket connection, CancellationToken token)
     {
         using var owner = MemoryOwner<byte>.Allocate(RakNet.MaximumTransmissionUnit);
 
-        var received = await connection.ReceiveAsync(owner.Memory);
+        var received = await connection.ReceiveAsync(owner.Memory, token);
 
         // Two longs, the magic and the string's unsigned short prefix.
         const byte skip = 34;
 
-        return received < skip
-            ? Result.Failure<string>("Incomplete packet.")
-            : Result.Success(Encoding.UTF8.GetString(owner.Span[skip..received]));
+        return received > skip
+            ? Result.Success(Encoding.UTF8.GetString(owner.Span[skip..received]))
+            : Result.Failure<string>("Incomplete packet.");
     }
 }

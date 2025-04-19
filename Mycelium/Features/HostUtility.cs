@@ -12,12 +12,13 @@ internal static class HostUtility
     /// Resolves DNS host of a given address.
     /// </summary>
     /// <param name="address">The address to resolve DNS from.</param>
+    /// <param name="token">A <see cref="CancellationToken"/> that can be used to cancel the asynchronous operation.</param>
     /// <returns>A <see cref="Result"/> containing the DNS resolved <see cref="IPAddress"/>.</returns>
-    public static async Task<Result<IPAddress>> ResolveHostAsync(string address)
+    public static async Task<Result<IPAddress>> ResolveHostAsync(string address, CancellationToken token)
     {
         try
         {
-            var addresses = await Dns.GetHostAddressesAsync(address);
+            var addresses = await Dns.GetHostAddressesAsync(address, token);
 
             // I think one is enough. We could try to take all resolved addresses and loop into each one till we get a valid connection.
             return addresses.Length is 0 ? Result.Failure<IPAddress>("Failed to resolve hostname.") : addresses[0];

@@ -14,13 +14,14 @@ internal static class StatusResponsePacket
     /// Reads a status response.
     /// </summary>
     /// <param name="input">The <see cref="PipeReader"/> to read from.</param>
+    /// <param name="token">A <see cref="CancellationToken"/> that can be used to cancel the asynchronous operation.</param>
     /// <returns>A <see cref="ValueTask"/> representing the asynchronous read operation.</returns>
     /// <exception cref="InvalidDataException">Incomplete packet.</exception>
-    public static async ValueTask<Result<string>> ReadAsync(PipeReader input)
+    public static async ValueTask<Result<string>> ReadAsync(PipeReader input, CancellationToken token)
     {
         while (true)
         {
-            var result = await input.ReadAsync();
+            var result = await input.ReadAsync(token);
 
             var buffer = result.Buffer;
 
