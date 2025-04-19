@@ -31,7 +31,7 @@ internal static class SequenceReaderExtensions
                 return false;
             }
 
-            var temporaryValue = read & 0b01111111;
+            var temporaryValue = read & 127;
             result |= temporaryValue << 7 * numbersRead;
 
             numbersRead++;
@@ -44,7 +44,7 @@ internal static class SequenceReaderExtensions
             value = 0;
 
             return false;
-        } while ((read & 0b10000000) != 0);
+        } while ((read & 128) != 0);
 
         value = result;
 

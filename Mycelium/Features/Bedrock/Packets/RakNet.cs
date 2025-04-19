@@ -1,4 +1,6 @@
-﻿namespace Mycelium.Features.Bedrock.Packets;
+﻿using System.Collections.Immutable;
+
+namespace Mycelium.Features.Bedrock.Packets;
 
 internal static class RakNet
 {
@@ -8,9 +10,9 @@ internal static class RakNet
     /// <remarks>
     /// doesn't allocate, see <see href="https://github.com/dotnet/roslyn/pull/24621"/>.
     /// </remarks>
-    public static ReadOnlyMemory<byte> UnconnectedPingPacket { get; } = new byte[]
-    {
-        0x01,
+    public static ImmutableArray<byte> UnconnectedPingPacket { get; } =
+    [
+        1,
         0,
         0,
         0,
@@ -43,7 +45,7 @@ internal static class RakNet
         0,
         0,
         0
-    };
+    ];
 
     // https://github.com/vp817/RakNetProtocolDoc?tab=readme-ov-file#general-constants.
     public const short MaximumTransmissionUnit = 1492;
