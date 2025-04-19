@@ -68,10 +68,9 @@ internal static class StatusResponsePacket
 
         response = null;
 
-        if (!reader.TryReadVariableInteger(out _)
-            || !reader.TryReadVariableInteger(out var identifier)
-            || !reader.TryReadVariableString(out response)
-            || identifier != 0)
+        if (!reader.TryReadVariableInteger(out _) || !reader.TryReadVariableInteger(out var identifier)
+                                                  || !reader.TryReadVariableString(out response)
+                                                  || identifier != 0)
         {
             return false;
         }

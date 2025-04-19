@@ -15,7 +15,10 @@ internal static class RakNet
     /// </remarks>
     public static ImmutableArray<byte> UnconnectedPingPacket { get; } =
     [
+        // Identifier
         1,
+
+        // Time.
         0,
         0,
         0,
@@ -24,6 +27,8 @@ internal static class RakNet
         0,
         0,
         0,
+
+        // Magic.
         0,
         255,
         255,
@@ -40,6 +45,8 @@ internal static class RakNet
         52,
         86,
         120,
+
+        // GUID.
         0,
         0,
         0,

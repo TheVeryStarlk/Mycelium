@@ -79,9 +79,8 @@ internal sealed class StatusResponse(string? description, string? name, int vers
                     return false;
                 }
 
-                if (!int.TryParse(parts[2], out var version)
-                    || !int.TryParse(parts[4], out var online)
-                    || !int.TryParse(parts[5], out var maximum))
+                if (!int.TryParse(parts[2], out var version) || !int.TryParse(parts[4], out var online)
+                                                             || !int.TryParse(parts[5], out var maximum))
                 {
                     return false;
                 }
