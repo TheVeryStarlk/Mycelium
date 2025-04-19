@@ -26,10 +26,10 @@ internal static class JavaEndpoint
         var group = application.MapGroup("/java");
 
         group.MapGet(
-            "/status/{address}",
-            async Task<Results<Ok<StatusResponse>, ProblemHttpResult>> (string address, JavaClient client) =>
+            "/status/{input}",
+            async Task<Results<Ok<StatusResponse>, ProblemHttpResult>> (string input, JavaClient client) =>
             {
-                var result = await client.RequestStatusAsync(address);
+                var result = await client.RequestStatusAsync(input);
                 return result.ToTypedResults();
             });
     }

@@ -1,5 +1,4 @@
-﻿using System.Net;
-using System.Net.Sockets;
+﻿using System.Net.Sockets;
 using LightResults;
 using Microsoft.AspNetCore.Connections;
 using Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets;
@@ -66,11 +65,11 @@ internal sealed class JavaClient(ILogger<JavaClient> logger, IMemoryCache cache)
     /// <returns>A <see cref="Result"/> containing the TCP <see cref="ConnectionContext"/>.</returns>
     private async Task<Result<ConnectionContext>> ConnectAsync(string address, ushort port)
     {
-        var result = await ResolveHostAsync(address);
+        var resolving = await HostUtility.ResolveHostAsync(address);
 
-        if (!result.IsSuccess(out var host))
+        if (!resolving.IsSuccess(out var host))
         {
-            return result.AsFailure<ConnectionContext>();
+            return resolving.AsFailure<ConnectionContext>();
         }
 
         // Is disposed by the connection context.
@@ -87,27 +86,5 @@ internal sealed class JavaClient(ILogger<JavaClient> logger, IMemoryCache cache)
         }
 
         return factory.Create(socket);
-    }
-
-    /// <summary>
-    /// Resolves DNS host of a given address.
-    /// </summary>
-    /// <param name="address">The address to resolve DNS from.</param>
-    /// <returns>A <see cref="Result"/> containing the DNS resolved <see cref="IPAddress"/>.</returns>
-    private async Task<Result<IPAddress>> ResolveHostAsync(string address)
-    {
-        var addresses = Array.Empty<IPAddress>();
-
-        try
-        {
-            addresses = await Dns.GetHostAddressesAsync(address);
-        }
-        catch (Exception exception)
-        {
-            logger.LogDebug(exception, "An exception occurred while getting host addresses");
-        }
-
-        // I think one is enough. We could try to take all resolved addresses and loop into each one till we get a valid connection.
-        return addresses.Length is 0 ? Result.Failure<IPAddress>("Failed to resolve hostname.") : addresses[0];
     }
 }

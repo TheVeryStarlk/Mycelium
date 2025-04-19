@@ -9,6 +9,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<PackageReference Include="CommunityToolkit.HighPerformance" Version="8.4.0"/>
 		<PackageReference Include="LightResults" Version="9.0.2"/>
 	</ItemGroup>
 

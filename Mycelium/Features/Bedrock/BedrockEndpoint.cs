@@ -11,6 +11,7 @@ internal static class BedrockEndpoint
     /// <param name="services">The <see cref="IServiceCollection"/> to add the services to.</param>
     public static void AddBedrock(this IServiceCollection services)
     {
+        services.AddSingleton<BedrockClient>();
     }
 
     /// <summary>
@@ -22,6 +23,10 @@ internal static class BedrockEndpoint
         // To add ping as well later.
         var group = application.MapGroup("/bedrock");
 
-        group.MapGet("/status/{address}", (string address) => "Hello, world!");
+        group.MapGet("/status/{input}", async (string input, BedrockClient client) =>
+        {
+            await client.RequestStatusAsync(input);
+            return "a";
+        });
     }
 }
