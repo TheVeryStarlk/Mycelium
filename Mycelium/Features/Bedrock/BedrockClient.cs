@@ -32,16 +32,16 @@ internal sealed class BedrockClient(ILogger<BedrockClient> logger, IMemoryCache 
 
         var reading = await UnconnectedPongPacket.ReadAsync(connection);
 
+        connection.Dispose();
+
         if (!reading.IsSuccess(out var status))
         {
             return reading.AsFailure<StatusResponse>();
         }
 
-        StatusResponse.TryCreate(Edition.Bedrock, status, out var a);
-
-        connection.Dispose();
-
-        return Result.Failure<StatusResponse>("Sad!");
+        return StatusResponse.TryCreate(Edition.Bedrock, status, out response)
+            ? Result.Success(cache.Set($"{Prefix}{input}", response))
+            : Result.Failure<StatusResponse>("Could not read status response.");
     }
 
     private async Task<Result<Socket>> ConnectAsync(string address, ushort port)

@@ -1,4 +1,6 @@
-﻿namespace Mycelium.Features.Bedrock;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+
+namespace Mycelium.Features.Bedrock;
 
 /// <summary>
 /// Handles registering and mapping all Minecraft Bedrock edition related services and endpoints.
@@ -23,10 +25,12 @@ internal static class BedrockEndpoint
         // To add ping as well later.
         var group = application.MapGroup("/bedrock");
 
-        group.MapGet("/status/{input}", async (string input, BedrockClient client) =>
-        {
-            await client.RequestStatusAsync(input);
-            return "a";
-        });
+        group.MapGet(
+            "/status/{input}",
+            async Task<Results<Ok<StatusResponse>, ProblemHttpResult>> (string input, BedrockClient client) =>
+            {
+                var result = await client.RequestStatusAsync(input);
+                return result.ToTypedResults();
+            });
     }
 }
