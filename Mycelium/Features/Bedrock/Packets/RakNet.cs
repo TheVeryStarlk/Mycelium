@@ -11,7 +11,7 @@ internal static class RakNet
     /// The unconnected ping packet in <see cref="RakNet"/> hard-coded.
     /// </summary>
     /// <remarks>
-    /// doesn't allocate, <see href="https://github.com/dotnet/roslyn/pull/24621"/>.
+    /// Doesn't allocate, <see href="https://github.com/dotnet/roslyn/pull/24621"/>.
     /// </remarks>
     public static ImmutableArray<byte> UnconnectedPingPacket { get; } =
     [

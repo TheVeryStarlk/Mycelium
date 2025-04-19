@@ -4,7 +4,7 @@ using LightResults;
 namespace Mycelium.Features;
 
 /// <summary>
-/// Provides <see cref="Dns"/> hostname resolving.
+/// Provides DNS hostname resolving.
 /// </summary>
 internal static class HostUtility
 {
