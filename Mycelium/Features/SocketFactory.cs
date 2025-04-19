@@ -16,7 +16,7 @@ internal sealed class SocketFactory
     /// <param name="address">The address to create the <see cref="Socket"/> to.</param>
     /// <param name="port">The port to create the <see cref="Socket"/> to.</param>
     /// <param name="token">A <see cref="CancellationToken"/> that can be used to cancel the asynchronous operation.</param>
-    /// <returns>A <see cref="Result"/> containing the UDP <see cref="Socket"/>.</returns>
+    /// <returns>A <see cref="Result"/> containing the created <see cref="Socket"/>.</returns>
     public async Task<Result<Socket>> ConnectAsync(Edition edition, string address, ushort port, CancellationToken token)
     {
         var resolving = await ResolveHostAsync(address, token);
