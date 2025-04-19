@@ -8,11 +8,8 @@ namespace Mycelium.Features.Bedrock.Packets;
 internal static class RakNet
 {
     /// <summary>
-    /// The unconnected ping packet in <see cref="RakNet"/> hard-coded.
+    /// The unconnected ping packet.
     /// </summary>
-    /// <remarks>
-    /// Doesn't allocate, <see href="https://github.com/dotnet/roslyn/pull/24621"/>.
-    /// </remarks>
     public static ImmutableArray<byte> UnconnectedPingPacket { get; } =
     [
         // Identifier
