@@ -18,6 +18,8 @@ application.UseExceptionHandler();
 application.UseStatusCodePages();
 application.UseHttpsRedirection();
 
+application.UseMiddleware<OperationCancelledMiddleware>();
+
 application.MapJava();
 application.MapBedrock();
 
