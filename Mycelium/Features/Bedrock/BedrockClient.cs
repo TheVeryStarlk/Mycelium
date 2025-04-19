@@ -37,6 +37,8 @@ internal sealed class BedrockClient(ILogger<BedrockClient> logger, IMemoryCache 
             return reading.AsFailure<StatusResponse>();
         }
 
+        StatusResponse.TryCreate(Edition.Bedrock, status, out var a);
+
         connection.Dispose();
 
         return Result.Failure<StatusResponse>("Sad!");
