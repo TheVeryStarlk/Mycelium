@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using System.Net.Sockets;
 using LightResults;
 
 namespace Mycelium.Features;
@@ -20,12 +21,12 @@ internal static class HostUtility
         {
             var addresses = await Dns.GetHostAddressesAsync(address, token);
 
-            // I think one is enough. We could try to take all resolved addresses and loop into each one till we get a valid connection.
+            // Could try to take all resolved addresses and loop into each one till a valid connection is made.
             return addresses.Length is 0 ? Result.Failure<IPAddress>("Failed to resolve hostname.") : addresses[0];
         }
-        catch
+        catch (SocketException)
         {
-            return Result.Failure<IPAddress>("An exception occured while trying to resolve hostname.");
+            return Result.Failure<IPAddress>("Failed to resolve hostname.");
         }
     }
 }

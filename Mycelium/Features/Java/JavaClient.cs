@@ -81,10 +81,9 @@ internal sealed class JavaClient(ILogger<JavaClient> logger, IMemoryCache cache)
         {
             await socket.ConnectAsync(host, port, token);
         }
-        catch (Exception exception)
+        catch (SocketException)
         {
-            logger.LogDebug(exception, "An exception occurred while connecting to the server");
-            return Result.Failure<ConnectionContext>("Could not connect to the server.");
+            return Result.Failure<ConnectionContext>("Failed to connect to the server.");
         }
 
         return factory.Create(socket);

@@ -76,9 +76,8 @@ internal sealed class BedrockClient(ILogger<BedrockClient> logger, IMemoryCache 
             // This "doesn't" actually create a connection.
             await socket.ConnectAsync(host, port, token);
         }
-        catch (Exception exception)
+        catch (SocketException)
         {
-            logger.LogDebug(exception, "An exception occurred while connecting to the server");
             return Result.Failure<Socket>("Could not connect to the server.");
         }
 
