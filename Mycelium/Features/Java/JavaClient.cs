@@ -45,6 +45,9 @@ internal sealed class JavaClient(ILogger<JavaClient> logger, IMemoryCache cache)
 
         var reading = await StatusResponsePacket.ReadAsync(connection.Transport.Input);
 
+        // Disposes of the socket as well.
+        connection.Abort();
+
         if (!reading.IsSuccess(out var status))
         {
             return reading.AsFailure<StatusResponse>();
@@ -70,7 +73,6 @@ internal sealed class JavaClient(ILogger<JavaClient> logger, IMemoryCache cache)
             return resolving.AsFailure<ConnectionContext>();
         }
 
-        // Is disposed by the connection context.
         var socket = new Socket(host.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
 
         try
