@@ -9,7 +9,7 @@ namespace Mycelium.Features.Bedrock;
 /// </summary>
 /// <param name="logger">The <see cref="ILogger"/> used to log actions.</param>
 /// <param name="cache">The <see cref="IMemoryCache"/> used for caching <see cref="StatusResponse"/>s.</param>
-internal sealed class BedrockClient(ILogger<BedrockClient> logger, IMemoryCache cache, SocketFactory factory)
+internal sealed class BedrockClient(IMemoryCache cache, SocketFactory factory)
 {
     /// <summary>
     /// Performs a status request to the given input address.

@@ -64,11 +64,7 @@ internal static class Variable
     /// <returns>The amount of written <see cref="byte"/>s.</returns>
     public static int Write(Span<byte> span, string value)
     {
-        var index = 0;
-
-        index += Write(span, Encoding.UTF8.GetByteCount(value));
-        index += Encoding.UTF8.GetBytes(value, span[index..]);
-
-        return index;
+        var index = Write(span, Encoding.UTF8.GetByteCount(value));
+        return index + Encoding.UTF8.GetBytes(value, span[index..]);
     }
 }
