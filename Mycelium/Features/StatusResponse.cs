@@ -67,9 +67,6 @@ internal sealed class StatusResponse(string? description, string? name, int vers
 
                 return true;
 
-            // Edition;MOTD line 1     ;Protocol Version;Version Name;Player Count;Max Player Count;Server Unique ID;MOTD line 2
-            // MCPE   ;Dedicated Server;390             ;1.14.60     ;0           ;10              ;132538608923865 ;Bedrock level
-
             case Edition.Bedrock:
                 // Rewrite to use spans.
                 var parts = input.Split(';');

@@ -15,7 +15,7 @@ internal static class UnconnectedPongPacket
     /// </summary>
     /// <param name="connection">The <see cref="Socket"/> to read from.</param>
     /// <param name="token">A <see cref="CancellationToken"/> that can be used to cancel the asynchronous operation.</param>
-    /// <returns>The read status.</returns>
+    /// <returns>A <see cref="Result"/> containing the read status.</returns>
     public static async Task<Result<string>> ReadAsync(Socket connection, CancellationToken token)
     {
         using var owner = MemoryOwner<byte>.Allocate(RakNet.MaximumTransmissionUnit);
