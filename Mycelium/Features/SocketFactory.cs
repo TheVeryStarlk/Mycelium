@@ -26,10 +26,17 @@ internal sealed class SocketFactory
             return resolving.AsFailure<Socket>();
         }
 
-        var socket = new Socket(
-            host.AddressFamily,
-            edition is Edition.Java ? SocketType.Stream : SocketType.Dgram,
-            edition is Edition.Java ? ProtocolType.Tcp : ProtocolType.Udp);
+        var result = edition switch
+        {
+            Edition.Java => new Socket(host.AddressFamily, SocketType.Stream, ProtocolType.Tcp),
+            Edition.Bedrock => new Socket(host.AddressFamily, SocketType.Dgram, ProtocolType.Udp),
+            _ => Result.Failure<Socket>("Invalid edition.")
+        };
+
+        if (!result.IsSuccess(out var socket))
+        {
+            return result.AsFailure<Socket>();
+        }
 
         try
         {
@@ -40,7 +47,7 @@ internal sealed class SocketFactory
             return Result.Failure<Socket>("Could not connect to the server.");
         }
 
-        return socket;
+        return result;
     }
 
     /// <summary>

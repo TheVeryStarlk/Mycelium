@@ -10,8 +10,6 @@ builder.Services.ConfigureHttpJsonOptions(options => options.SerializerOptions.T
 builder.Services.AddMemoryCache(options => options.ExpirationScanFrequency = TimeSpan.FromSeconds(500));
 builder.Services.AddProblemDetails();
 
-builder.Services.AddSingleton<SocketFactory>();
-
 builder.Services.AddJava();
 builder.Services.AddBedrock();
 

@@ -13,6 +13,7 @@ internal static class JavaEndpoint
     /// <param name="services">The <see cref="IServiceCollection"/> to add the services to.</param>
     public static void AddJava(this IServiceCollection services)
     {
+        services.AddSingleton<SocketFactory>();
         services.AddSingleton<JavaClient>();
     }
 

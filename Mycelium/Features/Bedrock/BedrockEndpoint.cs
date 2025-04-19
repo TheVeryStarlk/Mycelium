@@ -13,6 +13,7 @@ internal static class BedrockEndpoint
     /// <param name="services">The <see cref="IServiceCollection"/> to add the services to.</param>
     public static void AddBedrock(this IServiceCollection services)
     {
+        services.AddSingleton<SocketFactory>();
         services.AddSingleton<BedrockClient>();
     }
 
