@@ -4,7 +4,7 @@ using System.IO.Pipelines;
 namespace Mycelium.Features.Java.Packets;
 
 /// <summary>
-/// Represents a Minecraft status request packet.
+/// Represents a Minecraft Java status request packet.
 /// </summary>
 internal static class StatusRequestPacket
 {

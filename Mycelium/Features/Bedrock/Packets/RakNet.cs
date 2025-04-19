@@ -2,13 +2,16 @@
 
 namespace Mycelium.Features.Bedrock.Packets;
 
+/// <summary>
+/// Provides constants about the <see cref="RakNet"/> protocol.
+/// </summary>
 internal static class RakNet
 {
     /// <summary>
     /// The unconnected ping packet in <see cref="RakNet"/> hard-coded.
     /// </summary>
     /// <remarks>
-    /// doesn't allocate, see <see href="https://github.com/dotnet/roslyn/pull/24621"/>.
+    /// doesn't allocate, <see href="https://github.com/dotnet/roslyn/pull/24621"/>.
     /// </remarks>
     public static ImmutableArray<byte> UnconnectedPingPacket { get; } =
     [
@@ -47,6 +50,11 @@ internal static class RakNet
         0
     ];
 
-    // https://github.com/vp817/RakNetProtocolDoc?tab=readme-ov-file#general-constants.
+    /// <summary>
+    /// The maximum transmission unit size in <see cref="byte"/>s.
+    /// </summary>
+    /// <remarks>
+    /// <see href="https://github.com/vp817/RakNetProtocolDoc?tab=readme-ov-file#general-constants."/>.
+    /// </remarks>
     public const short MaximumTransmissionUnit = 1492;
 }

@@ -11,7 +11,7 @@ namespace Mycelium.Features.Java.Packets;
 internal static class StatusResponsePacket
 {
     /// <summary>
-    /// Reads a status response packet.
+    /// Reads a status response.
     /// </summary>
     /// <param name="input">The <see cref="PipeReader"/> to read from.</param>
     /// <returns>A <see cref="ValueTask"/> representing the asynchronous read operation.</returns>
@@ -68,9 +68,10 @@ internal static class StatusResponsePacket
 
         response = null;
 
-        if (!reader.TryReadVariableInteger(out _) || !reader.TryReadVariableInteger(out var identifier)
-                                                  || !reader.TryReadVariableString(out response)
-                                                  || identifier != 0)
+        if (!reader.TryReadVariableInteger(out _)
+            || !reader.TryReadVariableInteger(out var identifier)
+            || !reader.TryReadVariableString(out response)
+            || identifier != 0)
         {
             return false;
         }

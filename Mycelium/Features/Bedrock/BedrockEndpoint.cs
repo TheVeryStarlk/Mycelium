@@ -23,7 +23,7 @@ internal static class BedrockEndpoint
     public static void MapBedrock(this WebApplication application)
     {
         // To add ping as well later.
-        var group = application.MapGroup("/bedrock");
+        var group = application.MapGroup($"/{Edition.Bedrock}");
 
         group.MapGet(
             "/status/{input}",

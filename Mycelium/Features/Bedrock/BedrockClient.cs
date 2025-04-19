@@ -5,10 +5,18 @@ using Mycelium.Features.Bedrock.Packets;
 
 namespace Mycelium.Features.Bedrock;
 
+/// <summary>
+/// Represents a simple Minecraft Bedrock edition client.
+/// </summary>
+/// <param name="logger">The <see cref="ILogger"/> used to log actions.</param>
+/// <param name="cache">The <see cref="IMemoryCache"/> used for caching <see cref="StatusResponse"/>s.</param>
 internal sealed class BedrockClient(ILogger<BedrockClient> logger, IMemoryCache cache)
 {
-    private const string Prefix = "Bedrock";
-
+    /// <summary>
+    /// Performs a status request to the given input address.
+    /// </summary>
+    /// <param name="input">The input address to request status from.</param>
+    /// <returns>A <see cref="Result"/> containing the <see cref="StatusResponse"/>.</returns>
     public async Task<Result<StatusResponse>> RequestStatusAsync(string input)
     {
         if (!Address.TryParse(input, out var address))
@@ -16,7 +24,7 @@ internal sealed class BedrockClient(ILogger<BedrockClient> logger, IMemoryCache 
             return Result.Failure<StatusResponse>("Invalid address.");
         }
 
-        if (cache.TryGetValue($"{Prefix}{input}", out StatusResponse? response))
+        if (cache.TryGetValue($"{Edition.Bedrock}{input}", out StatusResponse? response))
         {
             return Result.Success(response!);
         }
@@ -40,10 +48,16 @@ internal sealed class BedrockClient(ILogger<BedrockClient> logger, IMemoryCache 
         }
 
         return StatusResponse.TryCreate(Edition.Bedrock, status, out response)
-            ? Result.Success(cache.Set($"{Prefix}{input}", response))
+            ? Result.Success(cache.Set($"{Edition.Bedrock}{input}", response))
             : Result.Failure<StatusResponse>("Could not read status response.");
     }
 
+    /// <summary>
+    /// Creates a UDP <see cref="Socket"/> to the given address and port.
+    /// </summary>
+    /// <param name="address">The address to connect to.</param>
+    /// <param name="port">The port to connect to.</param>
+    /// <returns>A <see cref="Result"/> containing the UDP <see cref="Socket"/>.</returns>
     private async Task<Result<Socket>> ConnectAsync(string address, ushort port)
     {
         var resolving = await HostUtility.ResolveHostAsync(address);

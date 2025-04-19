@@ -23,7 +23,7 @@ internal static class JavaEndpoint
     public static void MapJava(this WebApplication application)
     {
         // To add ping as well later.
-        var group = application.MapGroup("/java");
+        var group = application.MapGroup($"/{Edition.Java}");
 
         group.MapGet(
             "/status/{input}",
