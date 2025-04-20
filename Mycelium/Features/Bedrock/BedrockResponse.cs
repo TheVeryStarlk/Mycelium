@@ -43,31 +43,74 @@ internal sealed class BedrockResponse(string[] description, string? name, int ve
     /// <param name="input">The <see cref="string"/> to read from.</param>
     /// <param name="response">The result <see cref="BedrockResponse"/>.</param>
     /// <returns>True if the <see cref="string"/> was converted successfully, otherwise, false.</returns>
-    public static bool TryCreate(string input, [NotNullWhen(true)] out BedrockResponse? response)
+    public static bool TryCreate(ReadOnlySpan<char> input, [NotNullWhen(true)] out BedrockResponse? response)
     {
         response = null;
 
-        // Rewrite to use spans.
-        var parts = input.Split(';');
+        const char separator = ';';
 
-        if (parts.Length < 8)
+        var count = input.Count(separator);
+
+        if (count < 8)
         {
             return false;
         }
 
-        if (!int.TryParse(parts[2], out var version) || !int.TryParse(parts[4], out var online)
-                                                     || !int.TryParse(parts[5], out var maximum))
+        var description = new string[2];
+        var name = string.Empty;
+        var version = 0;
+        var maximum = 0;
+        var online = 0;
+
+        var parts = input.Split(separator);
+        var index = 0;
+
+        foreach (var part in parts)
         {
-            return false;
+            switch (index)
+            {
+                case 1:
+                    description[0] = input[part].ToString();
+                    break;
+
+                case 2:
+                    if (!int.TryParse(input[part], out version))
+                    {
+                        return false;
+                    }
+
+                    break;
+
+                case 3:
+                    name = input[part].ToString();
+                    break;
+
+                case 4:
+                    if (!int.TryParse(input[part], out online))
+                    {
+                        return false;
+                    }
+
+                    break;
+
+                case 5:
+                    if (!int.TryParse(input[part], out maximum))
+                    {
+                        return false;
+                    }
+
+                    break;
+
+                case 7:
+                    description[1] = input[part].ToString();
+                    break;
+            }
+
+            index++;
         }
 
-        string[] description =
-        [
-            parts[1],
-            parts[7]
-        ];
+        response = new BedrockResponse(description, name, version, maximum, online);
 
-        response = new BedrockResponse(description, parts[3], version, maximum, online);
         return true;
     }
 }

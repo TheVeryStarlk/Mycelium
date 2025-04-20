@@ -27,7 +27,6 @@ internal static class SequenceReaderExtensions
             if (!reader.TryRead(out read))
             {
                 value = 0;
-
                 return false;
             }
 
