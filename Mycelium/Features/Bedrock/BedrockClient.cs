@@ -1,4 +1,5 @@
-﻿using LightResults;
+﻿using System.Net.Sockets;
+using LightResults;
 using Microsoft.Extensions.Caching.Memory;
 using Mycelium.Features.Bedrock.Packets;
 
@@ -7,8 +8,8 @@ namespace Mycelium.Features.Bedrock;
 /// <summary>
 /// Represents a simple Minecraft Bedrock edition client.
 /// </summary>
-/// <param name="logger">The <see cref="ILogger"/> used to log actions.</param>
-/// <param name="cache">The <see cref="IMemoryCache"/> used for caching <see cref="StatusResponse"/>s.</param>
+/// <param name="cache">The <see cref="IMemoryCache"/> used for caching <see cref="BedrockResponse"/>s.</param>
+/// <param name="factory">The <see cref="SocketFactory"/> used for creating <see cref="Socket"/>s.</param>
 internal sealed class BedrockClient(IMemoryCache cache, SocketFactory factory)
 {
     /// <summary>
@@ -16,15 +17,15 @@ internal sealed class BedrockClient(IMemoryCache cache, SocketFactory factory)
     /// </summary>
     /// <param name="input">The input address to request status from.</param>
     /// <param name="token">A <see cref="CancellationToken"/> that can be used to cancel the asynchronous operation.</param>
-    /// <returns>A <see cref="Result"/> containing the <see cref="StatusResponse"/>.</returns>
-    public async Task<Result<StatusResponse>> RequestStatusAsync(string input, CancellationToken token)
+    /// <returns>A <see cref="Result"/> containing the <see cref="BedrockResponse"/>.</returns>
+    public async Task<Result<BedrockResponse>> RequestStatusAsync(string input, CancellationToken token)
     {
         if (!Address.TryParse(input, out var address))
         {
-            return Result.Failure<StatusResponse>("Invalid address.");
+            return Result.Failure<BedrockResponse>("Invalid address.");
         }
 
-        if (cache.TryGetValue($"{Edition.Bedrock}{input}", out StatusResponse? response))
+        if (cache.TryGetValue($"{Edition.Bedrock}{input}", out BedrockResponse? response))
         {
             return Result.Success(response!);
         }
@@ -33,7 +34,7 @@ internal sealed class BedrockClient(IMemoryCache cache, SocketFactory factory)
 
         if (!connecting.IsSuccess(out var socket))
         {
-            return connecting.AsFailure<StatusResponse>();
+            return connecting.AsFailure<BedrockResponse>();
         }
 
         await socket.SendAsync(RakNet.UnconnectedPingPacket.AsMemory(), token);
@@ -44,11 +45,11 @@ internal sealed class BedrockClient(IMemoryCache cache, SocketFactory factory)
 
         if (!reading.IsSuccess(out var status))
         {
-            return reading.AsFailure<StatusResponse>();
+            return reading.AsFailure<BedrockResponse>();
         }
 
-        return StatusResponse.TryCreate(Edition.Bedrock, status, out response)
+        return BedrockResponse.TryCreate(status, out response)
             ? Result.Success(cache.Set($"{Edition.Bedrock}{input}", response))
-            : Result.Failure<StatusResponse>("Could not read status response.");
+            : Result.Failure<BedrockResponse>("Could not read status response.");
     }
 }

@@ -28,7 +28,7 @@ internal static class JavaEndpoint
 
         group.MapGet(
             "/status/{input}",
-            async Task<Results<Ok<StatusResponse>, ProblemHttpResult>> (string input, JavaClient client, CancellationToken token) =>
+            async Task<Results<Ok<JavaResponse>, ProblemHttpResult>> (string input, JavaClient client, CancellationToken token) =>
             {
                 var result = await client.RequestStatusAsync(input, token);
                 return result.ToTypedResults();

@@ -5,7 +5,7 @@ using LightResults;
 namespace Mycelium.Features;
 
 /// <summary>
-/// A factory for creating <see cref="Socket"/>.
+/// A factory for creating <see cref="Socket"/>s.
 /// </summary>
 internal sealed class SocketFactory
 {

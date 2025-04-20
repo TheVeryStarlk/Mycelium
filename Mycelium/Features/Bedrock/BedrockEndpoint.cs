@@ -28,7 +28,7 @@ internal static class BedrockEndpoint
 
         group.MapGet(
             "/status/{input}",
-            async Task<Results<Ok<StatusResponse>, ProblemHttpResult>> (string input, BedrockClient client, CancellationToken token) =>
+            async Task<Results<Ok<BedrockResponse>, ProblemHttpResult>> (string input, BedrockClient client, CancellationToken token) =>
             {
                 var result = await client.RequestStatusAsync(input, token);
                 return result.ToTypedResults();

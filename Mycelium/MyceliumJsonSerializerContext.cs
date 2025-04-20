@@ -1,8 +1,10 @@
 ﻿using System.Text.Json.Serialization;
-using Mycelium.Features;
+using Mycelium.Features.Bedrock;
+using Mycelium.Features.Java;
 
 namespace Mycelium;
 
 [JsonSerializable(typeof(string))]
-[JsonSerializable(typeof(StatusResponse))]
+[JsonSerializable(typeof(JavaResponse))]
+[JsonSerializable(typeof(BedrockResponse))]
 internal sealed partial class MyceliumJsonSerializerContext : JsonSerializerContext;

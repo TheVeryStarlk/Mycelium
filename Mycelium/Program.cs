@@ -1,5 +1,4 @@
 using Mycelium;
-using Mycelium.Features;
 using Mycelium.Features.Bedrock;
 using Mycelium.Features.Java;
 

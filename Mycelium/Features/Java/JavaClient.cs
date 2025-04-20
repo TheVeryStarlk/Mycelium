@@ -1,4 +1,5 @@
-﻿using LightResults;
+﻿using System.Net.Sockets;
+using LightResults;
 using Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets;
 using Microsoft.Extensions.Caching.Memory;
 using Mycelium.Features.Java.Packets;
@@ -9,7 +10,8 @@ namespace Mycelium.Features.Java;
 /// Represents a simple Minecraft Java edition client.
 /// </summary>
 /// <param name="logger">The <see cref="ILogger"/> used to log actions.</param>
-/// <param name="cache">The <see cref="IMemoryCache"/> used for caching <see cref="StatusResponse"/>s.</param>
+/// <param name="cache">The <see cref="IMemoryCache"/> used for caching <see cref="JavaResponse"/>s.</param>
+/// <param name="factory">The <see cref="SocketFactory"/> used for creating <see cref="Socket"/>s.</param>
 internal sealed class JavaClient(ILogger<JavaClient> logger, IMemoryCache cache, SocketFactory factory)
 {
     // https://github.com/dotnet/aspnetcore/blob/c22a8530ee463bf3534ce5fc54f991e8ab1e9ee0/src/Servers/Kestrel/Transport.Sockets/src/SocketConnectionListener.cs#L31.
@@ -20,15 +22,15 @@ internal sealed class JavaClient(ILogger<JavaClient> logger, IMemoryCache cache,
     /// </summary>
     /// <param name="input">The input address to request status from.</param>
     /// <param name="token">A <see cref="CancellationToken"/> that can be used to cancel the asynchronous operation.</param>
-    /// <returns>A <see cref="Result"/> containing the <see cref="StatusResponse"/>.</returns>
-    public async Task<Result<StatusResponse>> RequestStatusAsync(string input, CancellationToken token)
+    /// <returns>A <see cref="Result"/> containing the <see cref="JavaResponse"/>.</returns>
+    public async Task<Result<JavaResponse>> RequestStatusAsync(string input, CancellationToken token)
     {
         if (!Address.TryParse(input, out var address))
         {
-            return Result.Failure<StatusResponse>("Invalid address.");
+            return Result.Failure<JavaResponse>("Invalid address.");
         }
 
-        if (cache.TryGetValue($"{Edition.Java}{input}", out StatusResponse? response))
+        if (cache.TryGetValue($"{Edition.Java}{input}", out JavaResponse? response))
         {
             return Result.Success(response!);
         }
@@ -37,7 +39,7 @@ internal sealed class JavaClient(ILogger<JavaClient> logger, IMemoryCache cache,
 
         if (!connecting.IsSuccess(out var socket))
         {
-            return connecting.AsFailure<StatusResponse>();
+            return connecting.AsFailure<JavaResponse>();
         }
 
         await using var connection = connectionContextFactory.Create(socket);
@@ -48,11 +50,11 @@ internal sealed class JavaClient(ILogger<JavaClient> logger, IMemoryCache cache,
 
         if (!reading.IsSuccess(out var status))
         {
-            return reading.AsFailure<StatusResponse>();
+            return reading.AsFailure<JavaResponse>();
         }
 
-        return StatusResponse.TryCreate(Edition.Java, status, out response)
+        return JavaResponse.TryCreate(status, out response)
             ? Result.Success(cache.Set($"{Edition.Java}{input}", response))
-            : Result.Failure<StatusResponse>("Could not read status response.");
+            : Result.Failure<JavaResponse>("Could not read status response.");
     }
 }
