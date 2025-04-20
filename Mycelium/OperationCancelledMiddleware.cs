@@ -18,7 +18,7 @@ internal sealed class OperationCancelledMiddleware(RequestDelegate next)
         }
         catch (OperationCanceledException)
         {
-            context.Response.StatusCode = 409;
+            context.Response.StatusCode = StatusCodes.Status409Conflict;
         }
     }
 }
