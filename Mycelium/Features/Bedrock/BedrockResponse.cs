@@ -63,7 +63,7 @@ internal sealed class BedrockResponse(string[] description, string? name, int ve
 
         string[] description =
         [
-            parts[0],
+            parts[1],
             parts[7]
         ];
 
