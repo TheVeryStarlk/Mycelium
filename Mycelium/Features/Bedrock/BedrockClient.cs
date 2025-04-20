@@ -9,8 +9,8 @@ namespace Mycelium.Features.Bedrock;
 /// Represents a simple Minecraft Bedrock edition client.
 /// </summary>
 /// <param name="cache">The <see cref="IMemoryCache"/> used for caching <see cref="BedrockResponse"/>s.</param>
-/// <param name="factory">The <see cref="SocketFactory"/> used for creating <see cref="Socket"/>s.</param>
-internal sealed class BedrockClient(IMemoryCache cache, SocketFactory factory)
+/// <param name="factory">The <see cref="BedrockSocketFactory"/> used for creating <see cref="Socket"/>s.</param>
+internal sealed class BedrockClient(IMemoryCache cache, BedrockSocketFactory factory)
 {
     /// <summary>
     /// Performs a status request to the given input address.
@@ -25,12 +25,12 @@ internal sealed class BedrockClient(IMemoryCache cache, SocketFactory factory)
             return Result.Failure<BedrockResponse>("Invalid address.");
         }
 
-        if (cache.TryGetValue($"{Edition.Bedrock}{input}", out BedrockResponse? response))
+        if (cache.TryGetValue($"Bedrock{input}", out BedrockResponse? response))
         {
             return Result.Success(response!);
         }
 
-        var connecting = await factory.ConnectAsync(Edition.Bedrock, address.First, address.Port, token);
+        var connecting = await factory.ConnectAsync(address.First, address.Port, token);
 
         if (!connecting.IsSuccess(out var socket))
         {
@@ -49,7 +49,7 @@ internal sealed class BedrockClient(IMemoryCache cache, SocketFactory factory)
         }
 
         return BedrockResponse.TryCreate(status, out response)
-            ? Result.Success(cache.Set($"{Edition.Bedrock}{input}", response))
+            ? Result.Success(cache.Set($"Bedrock{input}", response))
             : Result.Failure<BedrockResponse>("Could not read status response.");
     }
 }

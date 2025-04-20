@@ -11,8 +11,8 @@ namespace Mycelium.Features.Java;
 /// </summary>
 /// <param name="logger">The <see cref="ILogger"/> used to log actions.</param>
 /// <param name="cache">The <see cref="IMemoryCache"/> used for caching <see cref="JavaResponse"/>s.</param>
-/// <param name="factory">The <see cref="SocketFactory"/> used for creating <see cref="Socket"/>s.</param>
-internal sealed class JavaClient(ILogger<JavaClient> logger, IMemoryCache cache, SocketFactory factory)
+/// <param name="factory">The <see cref="JavaSocketFactory"/> used for creating <see cref="Socket"/>s.</param>
+internal sealed class JavaClient(ILogger<JavaClient> logger, IMemoryCache cache, JavaSocketFactory factory)
 {
     // https://github.com/dotnet/aspnetcore/blob/c22a8530ee463bf3534ce5fc54f991e8ab1e9ee0/src/Servers/Kestrel/Transport.Sockets/src/SocketConnectionListener.cs#L31.
     private readonly SocketConnectionContextFactory connectionContextFactory = new(new SocketConnectionFactoryOptions(), logger);
@@ -30,12 +30,12 @@ internal sealed class JavaClient(ILogger<JavaClient> logger, IMemoryCache cache,
             return Result.Failure<JavaResponse>("Invalid address.");
         }
 
-        if (cache.TryGetValue($"{Edition.Java}{input}", out JavaResponse? response))
+        if (cache.TryGetValue($"Java{input}", out JavaResponse? response))
         {
             return Result.Success(response!);
         }
 
-        var connecting = await factory.ConnectAsync(Edition.Java, address.First, address.Port, token);
+        var connecting = await factory.ConnectAsync(address.First, address.Port, token);
 
         if (!connecting.IsSuccess(out var socket))
         {
@@ -54,7 +54,7 @@ internal sealed class JavaClient(ILogger<JavaClient> logger, IMemoryCache cache,
         }
 
         return JavaResponse.TryCreate(status, out response)
-            ? Result.Success(cache.Set($"{Edition.Java}{input}", response))
+            ? Result.Success(cache.Set($"Java{input}", response))
             : Result.Failure<JavaResponse>("Could not read status response.");
     }
 }

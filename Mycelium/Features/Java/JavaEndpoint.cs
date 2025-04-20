@@ -13,7 +13,9 @@ internal static class JavaEndpoint
     /// <param name="services">The <see cref="IServiceCollection"/> to add the services to.</param>
     public static void AddJava(this IServiceCollection services)
     {
-        services.AddSingleton<SocketFactory>();
+        services.AddSingleton<HostService>();
+
+        services.AddSingleton<JavaSocketFactory>();
         services.AddSingleton<JavaClient>();
     }
 
@@ -24,7 +26,7 @@ internal static class JavaEndpoint
     public static void MapJava(this WebApplication application)
     {
         // To add ping as well later.
-        var group = application.MapGroup($"/{Edition.Java}");
+        var group = application.MapGroup("/java");
 
         group.MapGet(
             "/status/{input}",
