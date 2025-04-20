@@ -37,7 +37,7 @@ internal sealed class BedrockClient(IMemoryCache cache, BedrockSocketFactory fac
             return connecting.AsFailure<BedrockResponse>();
         }
 
-        await socket.SendAsync(RakNet.UnconnectedPingPacket.AsMemory(), token);
+        UnconnectedPingPacket.Write(socket);
 
         var reading = await UnconnectedPongPacket.ReadAsync(socket, token);
 
