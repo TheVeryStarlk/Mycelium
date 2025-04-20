@@ -17,7 +17,7 @@ internal static class SequenceReaderExtensions
     /// <returns>True if the variable-<see cref="int"/> was converted successfully, otherwise, false.</returns>
     public static bool TryReadVariableInteger(ref this SequenceReader<byte> reader, out int value)
     {
-        var numbersRead = 0;
+        var numbers = 0;
         var result = 0;
 
         byte read;
@@ -31,11 +31,11 @@ internal static class SequenceReaderExtensions
             }
 
             var temporaryValue = read & 127;
-            result |= temporaryValue << 7 * numbersRead;
+            result |= temporaryValue << 7 * numbers;
 
-            numbersRead++;
+            numbers++;
 
-            if (numbersRead <= 5)
+            if (numbers <= 5)
             {
                 continue;
             }

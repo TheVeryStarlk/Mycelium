@@ -69,6 +69,7 @@ internal static class StatusResponsePacket
 
         response = null;
 
+        // This allocates a new string. Try to refactor so it returns a sequence that will be used in creating the status response.
         if (!reader.TryReadVariableInteger(out _) || !reader.TryReadVariableInteger(out var identifier)
                                                   || !reader.TryReadVariableString(out response)
                                                   || identifier != 0)
