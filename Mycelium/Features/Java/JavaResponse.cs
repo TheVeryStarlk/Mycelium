@@ -100,7 +100,7 @@ internal sealed class JavaResponse(string? description, string? name, int versio
                     }
 
                     // Capture the starting brace.
-                    var old = reader.BytesConsumed - 1;
+                    var old = (int) reader.BytesConsumed - 1;
 
                     if (!reader.TrySkip())
                     {
@@ -108,11 +108,11 @@ internal sealed class JavaResponse(string? description, string? name, int versio
                     }
 
                     // Capture the ending brace.
-                    var last = reader.BytesConsumed + 1;
+                    var last = (int) reader.BytesConsumed;
 
                     // Ideally, description should be parsed as a Minecraft component, but for now, this reads the entire description's property as a string and returns it.
                     // Because some servers return "cursed" JSON that confuses the reader, the end result is sliced to remove anything that is outside the description property.
-                    var slice = input.Slice((int) old, (int) last);
+                    var slice = input.Slice(old, last - old);
                     var span = slice.IsSingleSegment ? slice.FirstSpan : slice.ToArray();
 
                     // Capture the ending description brace.
