@@ -7,6 +7,7 @@ namespace Mycelium.Features.Java.Packets;
 /// <summary>
 /// Represents a Minecraft status response packet.
 /// </summary>
+/// <param name="input">The <see cref="PipeReader"/> to read from.</param>
 internal struct StatusResponsePacket(PipeReader input) : IDisposable
 {
     private SequencePosition consumed;

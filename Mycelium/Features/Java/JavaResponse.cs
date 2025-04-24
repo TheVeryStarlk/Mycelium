@@ -113,7 +113,10 @@ internal sealed class JavaResponse(string? description, string? name, int versio
                     // Ideally, description should be parsed as a Minecraft component, but for now, this reads the entire description's property as a string and returns it.
                     // Because some servers return "cursed" JSON that confuses the reader, the end result is sliced to remove anything that is outside the description property.
                     var slice = input.Slice((int) old, (int) last);
-                    description = Encoding.UTF8.GetString(slice.IsSingleSegment ? slice.FirstSpan : slice.ToArray());
+                    var span = slice.IsSingleSegment ? slice.FirstSpan : slice.ToArray();
+
+                    // Capture the ending description brace.
+                    description = Encoding.UTF8.GetString(span[..(span.LastIndexOf((byte) '}') + 1)]);
 
                     break;
             }
