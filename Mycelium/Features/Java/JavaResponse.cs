@@ -107,7 +107,6 @@ internal sealed class JavaResponse(string? description, string? name, int versio
                         return false;
                     }
 
-                    // Capture the ending brace.
                     var last = (int) reader.BytesConsumed;
 
                     // Ideally, description should be parsed as a Minecraft component, but for now, this reads the entire description's property as a string and returns it.

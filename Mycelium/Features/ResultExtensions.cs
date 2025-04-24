@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 namespace Mycelium.Features;
 
 /// <summary>
-/// Provides helpful extensions for <see cref="Result"/>.
+/// Provides extensions for <see cref="Result"/>.
 /// </summary>
 internal static class ResultExtensions
 {

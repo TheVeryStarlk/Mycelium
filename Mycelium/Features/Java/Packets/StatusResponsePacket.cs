@@ -21,6 +21,7 @@ internal struct StatusResponsePacket(PipeReader input) : IDisposable
     /// <returns>A <see cref="ValueTask"/> representing the asynchronous read operation.</returns>
     public static async ValueTask<Result<ReadOnlySequence<byte>>> ReadAsync(PipeReader input, CancellationToken token)
     {
+        // Revisit this.
         using var packet = new StatusResponsePacket(input);
         return await packet.ReadAsync(token).ConfigureAwait(false);
     }

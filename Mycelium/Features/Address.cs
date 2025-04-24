@@ -26,6 +26,7 @@ internal readonly struct Address(string first, ushort port)
     /// <returns>True if the <see cref="string"/> was converted successfully, otherwise, false.</returns>
     public static bool TryParse(ReadOnlySpan<char> input, out Address address)
     {
+        // Make port optional?
         const char separator = ':';
 
         address = default;
