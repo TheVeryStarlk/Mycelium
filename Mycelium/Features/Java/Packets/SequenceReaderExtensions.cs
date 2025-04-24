@@ -1,6 +1,4 @@
 ﻿using System.Buffers;
-using System.Diagnostics.CodeAnalysis;
-using System.Text;
 
 namespace Mycelium.Features.Java.Packets;
 
@@ -56,17 +54,9 @@ internal static class SequenceReaderExtensions
     /// <param name="reader">The <see cref="SequenceReader{T}"/> to read from.</param>
     /// <param name="value">The read <see cref="string"/> value.</param>
     /// <returns>True if the <see cref="string"/> was converted successfully, otherwise, false.</returns>
-    public static bool TryReadVariableString(ref this SequenceReader<byte> reader, [NotNullWhen(true)] out string? value)
+    public static bool TryReadVariableString(ref this SequenceReader<byte> reader, out ReadOnlySequence<byte> value)
     {
-        value = null;
-
-        if (!reader.TryReadVariableInteger(out var length) || !reader.TryReadExact(length, out var buffer))
-        {
-            return false;
-        }
-
-        value = Encoding.UTF8.GetString(buffer);
-
-        return true;
+        value = default;
+        return reader.TryReadVariableInteger(out var length) && reader.TryReadExact(length, out value);
     }
 }

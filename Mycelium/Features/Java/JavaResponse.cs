@@ -1,8 +1,7 @@
-﻿using System.Diagnostics;
+﻿using System.Buffers;
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using System.Text.Json;
-using CommunityToolkit.HighPerformance.Buffers;
 
 namespace Mycelium.Features.Java;
 
@@ -49,7 +48,7 @@ internal sealed class JavaResponse(string? description, string? name, int versio
     /// <param name="input">The <see cref="ReadOnlySpan{T}"/> to read from.</param>
     /// <param name="response">The result <see cref="JavaResponse"/>.</param>
     /// <returns>True if the <see cref="string"/> was converted successfully, otherwise, false.</returns>
-    public static bool TryCreate(ReadOnlySpan<char> input, [NotNullWhen(true)] out JavaResponse? response)
+    public static bool TryCreate(ReadOnlySequence<byte> input, [NotNullWhen(true)] out JavaResponse? response)
     {
         response = null;
 
@@ -59,10 +58,7 @@ internal sealed class JavaResponse(string? description, string? name, int versio
         var maximum = 0;
         var online = 0;
 
-        using var owner = SpanOwner<byte>.Allocate(Encoding.UTF8.GetByteCount(input));
-        Debug.Assert(owner.Length >= Encoding.UTF8.GetBytes(input, owner.Span));
-
-        var reader = new Utf8JsonReader(owner.Span);
+        var reader = new Utf8JsonReader(input);
 
         while (reader.Read())
         {
@@ -116,8 +112,8 @@ internal sealed class JavaResponse(string? description, string? name, int versio
 
                     // Ideally, description should be parsed as a Minecraft component, but for now, this reads the entire description's property as a string and returns it.
                     // Because some servers return "cursed" JSON that confuses the reader, the end result is sliced to remove anything that is outside the description property.
-                    var slice = input[(int) old..(int) last];
-                    description = slice[..(slice.LastIndexOf('}') + 1)].ToString();
+                    var slice = input.Slice((int) old, (int) last);
+                    description = Encoding.UTF8.GetString(slice.IsSingleSegment ? slice.FirstSpan : slice.ToArray());
 
                     break;
             }

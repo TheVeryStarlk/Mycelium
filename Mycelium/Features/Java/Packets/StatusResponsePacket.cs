@@ -1,5 +1,4 @@
 ﻿using System.Buffers;
-using System.Diagnostics.CodeAnalysis;
 using System.IO.Pipelines;
 using LightResults;
 
@@ -8,16 +7,38 @@ namespace Mycelium.Features.Java.Packets;
 /// <summary>
 /// Represents a Minecraft status response packet.
 /// </summary>
-internal static class StatusResponsePacket
+internal struct StatusResponsePacket(PipeReader input) : IDisposable
 {
+    private SequencePosition consumed;
+    private SequencePosition examined;
+
     /// <summary>
-    /// Reads a status response.
+    /// Creates a new <see cref="StatusRequestPacket"/>, reads a packet and disposes of the <see cref="StatusRequestPacket"/>.
     /// </summary>
     /// <param name="input">The <see cref="PipeReader"/> to read from.</param>
     /// <param name="token">A <see cref="CancellationToken"/> that can be used to cancel the asynchronous operation.</param>
     /// <returns>A <see cref="ValueTask"/> representing the asynchronous read operation.</returns>
+    public static async ValueTask<Result<ReadOnlySequence<byte>>> ReadAsync(PipeReader input, CancellationToken token)
+    {
+        using var packet = new StatusResponsePacket(input);
+        return await packet.ReadAsync(token).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Disposes of the <see cref="StatusRequestPacket"/> by advanced the <see cref="PipeReader"/> to the end.
+    /// </summary>
+    public void Dispose()
+    {
+        input.AdvanceTo(consumed, examined);
+    }
+
+    /// <summary>
+    /// Reads a status response.
+    /// </summary>
+    /// <param name="token">A <see cref="CancellationToken"/> that can be used to cancel the asynchronous operation.</param>
+    /// <returns>A <see cref="ValueTask"/> representing the asynchronous read operation.</returns>
     /// <exception cref="InvalidDataException">Incomplete packet.</exception>
-    public static async ValueTask<Result<string>> ReadAsync(PipeReader input, CancellationToken token)
+    private async ValueTask<Result<ReadOnlySequence<byte>>> ReadAsync(CancellationToken token)
     {
         while (true)
         {
@@ -25,36 +46,31 @@ internal static class StatusResponsePacket
 
             var buffer = result.Buffer;
 
-            var consumed = buffer.Start;
-            var examined = buffer.End;
+            consumed = buffer.Start;
+            examined = buffer.End;
 
-            try
+            if (TryRead(ref buffer, out var status))
             {
-                if (TryRead(ref buffer, out var status))
-                {
-                    consumed = buffer.Start;
-                    examined = consumed;
+                consumed = buffer.Start;
+                examined = consumed;
 
-                    return status;
+                return status;
+            }
+
+            if (result.IsCompleted)
+            {
+                if (buffer.Length > 0)
+                {
+                    return Result.Failure<ReadOnlySequence<byte>>("Incomplete packet.");
                 }
 
-                if (result.IsCompleted)
-                {
-                    if (buffer.Length > 0)
-                    {
-                        return Result.Failure<string>("Incomplete packet.");
-                    }
+                break;
+            }
 
-                    break;
-                }
-            }
-            finally
-            {
-                input.AdvanceTo(consumed, examined);
-            }
+            input.AdvanceTo(consumed, examined);
         }
 
-        return Result.Failure<string>("Failed to read the packet.");
+        return Result.Failure<ReadOnlySequence<byte>>("Failed to read the packet.");
     }
 
     /// <summary>
@@ -63,13 +79,12 @@ internal static class StatusResponsePacket
     /// <param name="sequence">The <see cref="ReadOnlySequence{T}"/> to read from.</param>
     /// <param name="response">The read response.</param>
     /// <returns>True if the response was converted successfully, otherwise, false.</returns>
-    private static bool TryRead(ref ReadOnlySequence<byte> sequence, [NotNullWhen(true)] out string? response)
+    private static bool TryRead(ref ReadOnlySequence<byte> sequence, out ReadOnlySequence<byte> response)
     {
         var reader = new SequenceReader<byte>(sequence);
 
-        response = null;
+        response = default;
 
-        // This allocates a new string. Try to refactor so it returns a sequence that will be used in creating the status response.
         if (!reader.TryReadVariableInteger(out _) || !reader.TryReadVariableInteger(out var identifier)
                                                   || !reader.TryReadVariableString(out response)
                                                   || identifier != 0)
