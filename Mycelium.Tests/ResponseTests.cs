@@ -38,14 +38,7 @@ internal sealed class ResponseTests
         {
             Assert.That(success, Is.True);
 
-            Assert.That(
-                response?.Description,
-                Is.EqualTo(
-                    """
-                    {
-                      "text": "Hello, world!"
-                    }
-                    """));
+            Assert.That(response?.Description, Is.EqualTo("""{"text":"Hello, world!"}}"""));
 
             Assert.That(response?.Name, Is.EqualTo("1.21.2"));
             Assert.That(response?.Version, Is.EqualTo(768));

@@ -1,5 +1,8 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using System.Text.Json.Nodes;
+﻿using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
+using System.Text;
+using System.Text.Json;
+using CommunityToolkit.HighPerformance.Buffers;
 
 namespace Mycelium.Features.Java;
 
@@ -43,20 +46,84 @@ internal sealed class JavaResponse(string? description, string? name, int versio
     /// <summary>
     /// Tries to create a <see cref="JavaResponse"/> from a <see cref="string"/>.
     /// </summary>
-    /// <param name="input">The <see cref="string"/> to read from.</param>
+    /// <param name="input">The <see cref="ReadOnlySpan{T}"/> to read from.</param>
     /// <param name="response">The result <see cref="JavaResponse"/>.</param>
     /// <returns>True if the <see cref="string"/> was converted successfully, otherwise, false.</returns>
-    public static bool TryCreate(string input, [NotNullWhen(true)] out JavaResponse? response)
+    public static bool TryCreate(ReadOnlySpan<char> input, [NotNullWhen(true)] out JavaResponse? response)
     {
-        // Refactor this to use JSON reader.
-        var node = JsonNode.Parse(input)!;
+        response = null;
 
-        response = new JavaResponse(
-            node["description"]?.ToString(),
-            node["version"]?["name"]?.ToString(),
-            node["version"]?["protocol"]?.GetValue<int>() ?? 0,
-            node["players"]?["max"]?.GetValue<int>() ?? 0,
-            node["players"]?["online"]?.GetValue<int>() ?? 0);
+        var description = string.Empty;
+        var name = string.Empty;
+        var version = 0;
+        var maximum = 0;
+        var online = 0;
+
+        using var owner = SpanOwner<byte>.Allocate(Encoding.UTF8.GetByteCount(input));
+        Debug.Assert(owner.Length >= Encoding.UTF8.GetBytes(input, owner.Span));
+
+        var reader = new Utf8JsonReader(owner.Span);
+
+        while (reader.Read())
+        {
+            if (reader.TokenType is not JsonTokenType.PropertyName)
+            {
+                continue;
+            }
+
+            var property = reader.GetString();
+
+            if (!reader.Read())
+            {
+                return false;
+            }
+
+            switch (property)
+            {
+                case "name":
+                    name = reader.GetString();
+                    break;
+
+                case "protocol":
+                    version = reader.GetInt32();
+                    break;
+
+                case "max":
+                    maximum = reader.GetInt32();
+                    break;
+
+                case "online":
+                    online = reader.GetInt32();
+                    break;
+
+                case "description":
+                    if (reader.TokenType is JsonTokenType.String)
+                    {
+                        description = reader.GetString();
+                        break;
+                    }
+
+                    // Capture the starting brace.
+                    var old = reader.BytesConsumed - 1;
+
+                    if (!reader.TrySkip())
+                    {
+                        return false;
+                    }
+
+                    // Capture the ending brace.
+                    var last = reader.BytesConsumed + 1;
+
+                    // Ideally, description should be parsed as a Minecraft component, but for now, this reads the entire description's property as a string and returns it.
+                    // Because some servers return "cursed" JSON that confuses the reader, the end result is sliced to remove anything that is outside the description property.
+                    var slice = input[(int) old..(int) last];
+                    description = slice[..(slice.LastIndexOf('}') + 1)].ToString();
+
+                    break;
+            }
+        }
+
+        response = new JavaResponse(description, name, version, maximum, online);
 
         return true;
     }
