@@ -37,7 +37,12 @@ internal sealed class BedrockClient(IMemoryCache cache, BedrockSocketFactory fac
             return connecting.AsFailure<BedrockResponse>();
         }
 
-        UnconnectedPingPacket.Write(socket);
+        var writing = await UnconnectedPingPacket.WriteAsync(socket);
+
+        if (!writing.IsSuccess())
+        {
+            return writing.AsFailure<BedrockResponse>();
+        }
 
         var reading = await UnconnectedPongPacket.ReadAsync(socket, token);
 
