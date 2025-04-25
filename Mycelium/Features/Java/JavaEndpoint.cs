@@ -3,22 +3,10 @@
 namespace Mycelium.Features.Java;
 
 /// <summary>
-/// Handles registering and mapping all Minecraft Java edition related services and endpoints.
+/// Handles registering and mapping all Minecraft Java edition's endpoints.
 /// </summary>
 internal static class JavaEndpoint
 {
-    /// <summary>
-    /// Registers all Minecraft Java edition services.
-    /// </summary>
-    /// <param name="services">The <see cref="IServiceCollection"/> to add the services to.</param>
-    public static void AddJava(this IServiceCollection services)
-    {
-        services.AddSingleton<HostService>();
-
-        services.AddSingleton<JavaSocketFactory>();
-        services.AddSingleton<JavaClient>();
-    }
-
     /// <summary>
     /// Maps all Minecraft Java edition endpoints.
     /// </summary>

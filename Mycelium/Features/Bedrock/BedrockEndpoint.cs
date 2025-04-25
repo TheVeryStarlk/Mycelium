@@ -3,22 +3,10 @@
 namespace Mycelium.Features.Bedrock;
 
 /// <summary>
-/// Handles registering and mapping all Minecraft Bedrock edition related services and endpoints.
+/// Handles registering and mapping all Minecraft Bedrock edition's endpoints.
 /// </summary>
 internal static class BedrockEndpoint
 {
-    /// <summary>
-    /// Registers all Minecraft Bedrock edition services.
-    /// </summary>
-    /// <param name="services">The <see cref="IServiceCollection"/> to add the services to.</param>
-    public static void AddBedrock(this IServiceCollection services)
-    {
-        services.AddSingleton<HostService>();
-
-        services.AddSingleton<BedrockSocketFactory>();
-        services.AddSingleton<BedrockClient>();
-    }
-
     /// <summary>
     /// Maps all Minecraft Bedrock edition endpoints.
     /// </summary>
