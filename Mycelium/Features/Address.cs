@@ -19,11 +19,11 @@ internal readonly struct Address(string first, ushort port)
     public ushort Port => port;
 
     /// <summary>
-    /// Tries to convert a <see cref="string"/> to an <see cref="Address"/>.
+    /// Tries to convert a <see cref="ReadOnlySpan{T}"/> to an <see cref="Address"/>.
     /// </summary>
-    /// <param name="input">The <see cref="string"/> to convert.</param>
+    /// <param name="input">The <see cref="ReadOnlySpan{T}"/> to convert.</param>
     /// <param name="address">The result <see cref="Address"/>.</param>
-    /// <returns>True if the <see cref="string"/> was converted successfully, otherwise, false.</returns>
+    /// <returns>True if the <see cref="ReadOnlySpan{T}"/> was converted successfully, otherwise, false.</returns>
     public static bool TryParse(ReadOnlySpan<char> input, out Address address)
     {
         // Make port optional?

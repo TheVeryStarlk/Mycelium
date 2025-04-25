@@ -43,11 +43,11 @@ internal sealed class JavaResponse(string? description, string? name, int versio
     public int Online => online;
 
     /// <summary>
-    /// Tries to create a <see cref="JavaResponse"/> from a <see cref="string"/>.
+    /// Tries to create a <see cref="JavaResponse"/> from a <see cref="ReadOnlySequence{T}"/>.
     /// </summary>
-    /// <param name="input">The <see cref="ReadOnlySpan{T}"/> to read from.</param>
+    /// <param name="input">The <see cref="ReadOnlySequence{T}"/> to read from.</param>
     /// <param name="response">The result <see cref="JavaResponse"/>.</param>
-    /// <returns>True if the <see cref="string"/> was converted successfully, otherwise, false.</returns>
+    /// <returns>True if the <see cref="ReadOnlySequence{T}"/> was converted successfully, otherwise, false.</returns>
     public static bool TryCreate(ReadOnlySequence<byte> input, [NotNullWhen(true)] out JavaResponse? response)
     {
         response = null;
