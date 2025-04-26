@@ -19,7 +19,7 @@ internal static class UnconnectedPongPacket
     public static async Task<Result<string>> ReadAsync(Socket connection, CancellationToken token)
     {
         // Maximum transmission unit.
-        using var owner = MemoryOwner<byte>.Allocate(1492);
+        using var owner = MemoryOwner<byte>.Allocate(1500);
 
         var received = await connection.ReceiveAsync(owner.Memory, token);
 
