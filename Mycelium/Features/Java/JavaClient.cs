@@ -30,7 +30,7 @@ internal sealed class JavaClient(ILogger<JavaClient> logger, IMemoryCache cache,
             return Result.Failure<JavaResponse>("Invalid address.");
         }
 
-        if (cache.TryGetValue($"Java{input}", out JavaResponse? response))
+        if (cache.TryGetValue(input, out JavaResponse? response))
         {
             return Result.Success(response!);
         }
@@ -54,7 +54,7 @@ internal sealed class JavaClient(ILogger<JavaClient> logger, IMemoryCache cache,
         }
 
         return JavaResponse.TryCreate(status, out response)
-            ? Result.Success(cache.Set($"Java{input}", response))
+            ? Result.Success(cache.Set(input, response))
             : Result.Failure<JavaResponse>("Could not read status response.");
     }
 }

@@ -25,7 +25,7 @@ internal sealed class BedrockClient(IMemoryCache cache, BedrockSocketFactory fac
             return Result.Failure<BedrockResponse>("Invalid address.");
         }
 
-        if (cache.TryGetValue($"Bedrock{input}", out BedrockResponse? response))
+        if (cache.TryGetValue(input, out BedrockResponse? response))
         {
             return Result.Success(response!);
         }
@@ -54,7 +54,7 @@ internal sealed class BedrockClient(IMemoryCache cache, BedrockSocketFactory fac
         }
 
         return BedrockResponse.TryCreate(status, out response)
-            ? Result.Success(cache.Set($"Bedrock{input}", response))
+            ? Result.Success(cache.Set(input, response))
             : Result.Failure<BedrockResponse>("Could not read status response.");
     }
 }
