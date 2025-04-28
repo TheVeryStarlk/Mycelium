@@ -17,26 +17,27 @@ internal static class SequenceReaderExtensions
     {
         value = 0;
 
-        var numbers = 0;
+        var index = 0;
         var result = 0;
 
-        byte read;
+        byte current;
 
         do
         {
-            if (!reader.TryRead(out read))
+            if (!reader.TryRead(out current))
             {
                 return false;
             }
 
-            result |= (read & 127) << 7 * numbers;
-            numbers++;
+            result |= (current & 127) << 7 * index;
 
-            if (numbers > 5)
+            index++;
+
+            if (index > 5)
             {
                 return false;
             }
-        } while ((read & 128) != 0);
+        } while ((current & 128) != 0);
 
         value = result;
 
