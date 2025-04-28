@@ -29,9 +29,7 @@ internal static class SequenceReaderExtensions
                 return false;
             }
 
-            var temporary = read & 127;
-            result |= temporary << 7 * numbers;
-
+            result |= (read & 127) << 7 * numbers;
             numbers++;
 
             if (numbers > 5)
