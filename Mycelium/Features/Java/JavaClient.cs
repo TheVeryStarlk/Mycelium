@@ -11,8 +11,7 @@ namespace Mycelium.Features.Java;
 /// </summary>
 /// <param name="logger">The <see cref="ILogger"/> used to log actions.</param>
 /// <param name="cache">The <see cref="IMemoryCache"/> used for caching <see cref="JavaResponse"/>s.</param>
-/// <param name="factory">The <see cref="JavaSocketFactory"/> used for creating <see cref="Socket"/>s.</param>
-internal sealed class JavaClient(ILogger<JavaClient> logger, IMemoryCache cache, JavaSocketFactory factory)
+internal sealed class JavaClient(ILogger<JavaClient> logger, IMemoryCache cache)
 {
     // https://github.com/dotnet/aspnetcore/blob/c22a8530ee463bf3534ce5fc54f991e8ab1e9ee0/src/Servers/Kestrel/Transport.Sockets/src/SocketConnectionListener.cs#L31.
     private readonly SocketConnectionContextFactory connectionContextFactory = new(new SocketConnectionFactoryOptions(), logger);
@@ -35,11 +34,15 @@ internal sealed class JavaClient(ILogger<JavaClient> logger, IMemoryCache cache,
             return Result.Success(response!);
         }
 
-        var connecting = await factory.ConnectAsync(address.First, address.Port, token);
+        var socket = new Socket(SocketType.Stream, ProtocolType.Tcp);
 
-        if (!connecting.IsSuccess(out var socket))
+        try
         {
-            return connecting.AsFailure<JavaResponse>();
+            await socket.ConnectAsync(address.First, address.Port, token);
+        }
+        catch (SocketException)
+        {
+            return Result.Failure<JavaResponse>("Could not connect to the server.");
         }
 
         await using var connection = connectionContextFactory.Create(socket);
