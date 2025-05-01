@@ -38,7 +38,7 @@ internal readonly struct Address(string host, ushort port)
 
         var index = input.IndexOf(separator) + 1;
 
-        if (index > 64 || index >= input.Length || !ushort.TryParse(input[index..], out var port) || index - 1 < 0)
+        if (index > 64 || index >= input.Length || index - 1 < 0 || !ushort.TryParse(input[index..], out var port))
         {
             return false;
         }
