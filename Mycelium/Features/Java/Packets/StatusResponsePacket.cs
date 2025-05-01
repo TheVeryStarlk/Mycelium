@@ -26,40 +26,22 @@ internal static class StatusResponsePacket
             var consumed = buffer.Start;
             var examined = buffer.End;
 
-            // Don't advance to the end of the buffer if the packet was read successfully;
-            // The buffer is needed to construct a response. There's no intention to use the reader again,
-            // so it is "safe" to not advance - not sure if this is leaking memory or is a bad practice in general, though.
-            var success = false;
-
-            try
+            if (TryRead(ref buffer, out var status))
             {
-                if (TryRead(ref buffer, out var status))
-                {
-                    consumed = buffer.Start;
-                    examined = consumed;
-
-                    success = true;
-
-                    return status;
-                }
-
-                if (result.IsCompleted)
-                {
-                    if (buffer.Length > 0)
-                    {
-                        return Result.Failure<ReadOnlySequence<byte>>("Incomplete packet.");
-                    }
-
-                    break;
-                }
+                return status;
             }
-            finally
+
+            if (result.IsCompleted)
             {
-                if (!success)
+                if (buffer.Length > 0)
                 {
-                    input.AdvanceTo(consumed, examined);
+                    return Result.Failure<ReadOnlySequence<byte>>("Incomplete packet.");
                 }
+
+                break;
             }
+
+            input.AdvanceTo(consumed, examined);
         }
 
         return Result.Failure<ReadOnlySequence<byte>>("Failed to read the packet.");

@@ -53,8 +53,12 @@ internal sealed class JavaClient(ILogger<JavaClient> logger, IMemoryCache cache,
             return reading.AsFailure<JavaResponse>();
         }
 
-        return JavaResponse.TryCreate(status, out response)
+        var result = JavaResponse.TryCreate(status, out response)
             ? Result.Success(cache.Set(input, response))
             : Result.Failure<JavaResponse>("Could not read status response.");
+
+        connection.Transport.Input.AdvanceTo(status.Start, status.End);
+
+        return result;
     }
 }
