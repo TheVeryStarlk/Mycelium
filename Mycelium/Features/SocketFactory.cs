@@ -22,7 +22,7 @@ internal sealed class SocketFactory
 
         try
         {
-            await socket.ConnectAsync(address.First, address.Port, token);
+            await socket.ConnectAsync(address.Host, address.Port, token);
         }
         catch (SocketException)
         {

@@ -3,15 +3,15 @@
 /// <summary>
 /// Represents a Minecraft address.
 /// </summary>
-/// <param name="first">The <see cref="string"/> part of the address.</param>
+/// <param name="host">The <see cref="string"/> part of the address.</param>
 /// <param name="port">The port part of the address.</param>
 /// <example>mc.hypixel.net:25565</example>
-internal readonly struct Address(string first, ushort port)
+internal readonly struct Address(string host, ushort port)
 {
     /// <summary>
     /// The <see cref="string"/> part of the address.
     /// </summary>
-    public string First => first;
+    public string Host => host;
 
     /// <summary>
     /// The port part of the address.
