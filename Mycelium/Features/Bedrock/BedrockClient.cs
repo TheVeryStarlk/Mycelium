@@ -9,7 +9,8 @@ namespace Mycelium.Features.Bedrock;
 /// Represents a simple Minecraft Bedrock edition client.
 /// </summary>
 /// <param name="cache">The <see cref="IMemoryCache"/> used for caching <see cref="BedrockResponse"/>s.</param>
-internal sealed class BedrockClient(IMemoryCache cache)
+/// <param name="factory">The <see cref="SocketFactory"/> used for creating <see cref="Socket"/>s.</param>
+internal sealed class BedrockClient(IMemoryCache cache, SocketFactory factory)
 {
     /// <summary>
     /// Performs a status request to the given input address.
@@ -29,15 +30,11 @@ internal sealed class BedrockClient(IMemoryCache cache)
             return Result.Success(response!);
         }
 
-        var socket = new Socket(SocketType.Dgram, ProtocolType.Udp);
+        var connecting = await factory.ConnectAsync(address, SocketType.Dgram, ProtocolType.Udp, token);
 
-        try
+        if (!connecting.IsSuccess(out var socket))
         {
-            await socket.ConnectAsync(address.First, address.Port, token);
-        }
-        catch (SocketException)
-        {
-            return Result.Failure<BedrockResponse>("Could not connect to the server.");
+            return connecting.AsFailure<BedrockResponse>();
         }
 
         var writing = await UnconnectedPingPacket.WriteAsync(socket);
