@@ -26,6 +26,7 @@ internal sealed class SocketFactory
         }
         catch (SocketException)
         {
+            socket.Dispose();
             return Result.Failure<Socket>("Could not establish a connection.");
         }
 
