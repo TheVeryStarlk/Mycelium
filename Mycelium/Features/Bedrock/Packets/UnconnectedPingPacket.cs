@@ -5,7 +5,7 @@ using LightResults;
 namespace Mycelium.Features.Bedrock.Packets;
 
 /// <summary>
-/// Represents a Minecraft Bedrock unconnected pong packet.
+/// Represents a Minecraft Bedrock unconnected ping packet.
 /// </summary>
 internal static class UnconnectedPingPacket
 {
@@ -54,7 +54,7 @@ internal static class UnconnectedPingPacket
     ];
 
     /// <summary>
-    /// Writes an unconnected pong packet.
+    /// Writes an unconnected ping packet.
     /// </summary>
     /// <param name="socket">The <see cref="Socket"/> to write to.</param>
     /// <returns>A <see cref="Task"/> representing the asynchronous write operation.</returns>

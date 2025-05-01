@@ -51,16 +51,16 @@ internal static class StatusResponsePacket
     /// Tries to read a response from a <see cref="ReadOnlySequence{T}"/>.
     /// </summary>
     /// <param name="sequence">The <see cref="ReadOnlySequence{T}"/> to read from.</param>
-    /// <param name="response">The read response.</param>
+    /// <param name="status">The read status.</param>
     /// <returns>True if the response was converted successfully, otherwise, false.</returns>
-    private static bool TryRead(ref ReadOnlySequence<byte> sequence, out ReadOnlySequence<byte> response)
+    private static bool TryRead(ref ReadOnlySequence<byte> sequence, out ReadOnlySequence<byte> status)
     {
         var reader = new SequenceReader<byte>(sequence);
 
-        response = default;
+        status = default;
 
         if (!reader.TryReadVariableInteger(out _) || !reader.TryReadVariableInteger(out var identifier)
-                                                  || !reader.TryReadVariableString(out response)
+                                                  || !reader.TryReadVariableString(out status)
                                                   || identifier != 0)
         {
             return false;

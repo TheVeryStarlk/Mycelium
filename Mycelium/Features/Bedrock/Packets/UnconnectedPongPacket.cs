@@ -13,15 +13,15 @@ internal static class UnconnectedPongPacket
     /// <summary>
     /// Reads an unconnected pong's status response.
     /// </summary>
-    /// <param name="connection">The <see cref="Socket"/> to read from.</param>
+    /// <param name="socket">The <see cref="Socket"/> to read from.</param>
     /// <param name="token">A <see cref="CancellationToken"/> that can be used to cancel the asynchronous operation.</param>
     /// <returns>A <see cref="Result"/> containing the read status.</returns>
-    public static async Task<Result<string>> ReadAsync(Socket connection, CancellationToken token)
+    public static async Task<Result<string>> ReadAsync(Socket socket, CancellationToken token)
     {
         // Maximum transmission unit.
         using var owner = MemoryOwner<byte>.Allocate(1500);
 
-        var received = await connection.ReceiveAsync(owner.Memory, token);
+        var received = await socket.ReceiveAsync(owner.Memory, token);
 
         // Two longs, the magic and the string's unsigned short prefix.
         // Probably should validate the payload, though.
