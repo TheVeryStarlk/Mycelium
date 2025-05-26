@@ -26,9 +26,17 @@ internal static class StatusResponsePacket
             var consumed = buffer.Start;
             var examined = buffer.End;
 
-            if (TryRead(ref buffer, out var status))
+            var reading = TryRead(ref buffer, out var status);
+
+            if (reading.IsSuccess(out var success) && success)
             {
                 return status;
+            }
+
+            // Managed to read, but failed to slice the sequence.
+            if (!success)
+            {
+                return reading.AsFailure<ReadOnlySequence<byte>>();
             }
 
             if (result.IsCompleted)
@@ -53,17 +61,22 @@ internal static class StatusResponsePacket
     /// <param name="sequence">The <see cref="ReadOnlySequence{T}"/> to read from.</param>
     /// <param name="status">The read status.</param>
     /// <returns>True if the response was converted successfully, otherwise, false.</returns>
-    private static bool TryRead(ref ReadOnlySequence<byte> sequence, out ReadOnlySequence<byte> status)
+    private static Result<bool> TryRead(ref ReadOnlySequence<byte> sequence, out ReadOnlySequence<byte> status)
     {
         var reader = new SequenceReader<byte>(sequence);
 
         status = default;
 
         if (!reader.TryReadVariableInteger(out _) || !reader.TryReadVariableInteger(out var identifier)
-                                                  || !reader.TryReadVariableString(out status)
-                                                  || identifier != 0)
+                                                  || !reader.TryReadVariableString(out status))
         {
             return false;
+        }
+
+        // Packet's identifier.
+        if (identifier != 0)
+        {
+            return Result.Failure<bool>("Invalid identifier for packet.");
         }
 
         sequence = sequence.Slice(reader.Position);
