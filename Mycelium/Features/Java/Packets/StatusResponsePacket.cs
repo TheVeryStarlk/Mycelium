@@ -28,15 +28,15 @@ internal static class StatusResponsePacket
 
             var reading = TryRead(ref buffer, out var status);
 
-            if (reading.IsSuccess(out var success) && success)
+            if (!reading.IsSuccess(out var success))
             {
-                return status;
+                // Managed to read, but failed to slice the sequence.
+                return reading.AsFailure<ReadOnlySequence<byte>>();
             }
 
-            // Managed to read, but failed to slice the sequence.
-            if (!success)
+            if (success)
             {
-                return reading.AsFailure<ReadOnlySequence<byte>>();
+                return status;
             }
 
             if (result.IsCompleted)
