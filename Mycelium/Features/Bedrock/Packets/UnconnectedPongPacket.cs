@@ -23,9 +23,9 @@ internal static class UnconnectedPongPacket
 
         var received = await socket.ReceiveAsync(owner.Memory, token);
 
-        // Two longs, the magic and the string's unsigned short prefix.
+        // Identifier, two longs, the magic and the string's unsigned short prefix.
         // Probably should validate the payload, though.
-        const byte skip = 34;
+        const byte skip = 35;
 
         return received > skip
             ? Result.Success(Encoding.UTF8.GetString(owner.Span[skip..received]))
