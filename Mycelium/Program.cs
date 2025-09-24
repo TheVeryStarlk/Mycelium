@@ -20,10 +20,7 @@ builder.Services.AddSingleton<BedrockClient>();
 var application = builder.Build();
 
 application.UseExceptionHandler();
-application.UseStatusCodePages();
 application.UseHttpsRedirection();
-
-application.UseMiddleware<OperationCancelledMiddleware>();
 
 application.MapJava();
 application.MapBedrock();

@@ -1,4 +1,4 @@
 ﻿<Solution>
-	<Project Path="Mycelium.Tests\Mycelium.Tests.csproj" Type="Classic C#"/>
-	<Project Path="Mycelium\Mycelium.csproj" Type="Classic C#"/>
+    <Project Path="Mycelium.Tests\Mycelium.Tests.csproj" Type="Classic C#"/>
+    <Project Path="Mycelium\Mycelium.csproj" Type="Classic C#"/>
 </Solution>
