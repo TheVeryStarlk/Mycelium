@@ -26,30 +26,35 @@ internal static class StatusResponsePacket
             var consumed = buffer.Start;
             var examined = buffer.End;
 
-            var reading = TryRead(ref buffer, out var status);
-
-            if (!reading.IsSuccess(out var success))
+            try
             {
-                // Managed to read, but failed to slice the sequence.
-                return reading.AsFailure<ReadOnlySequence<byte>>();
-            }
+                var reading = TryRead(ref buffer, out var status);
 
-            if (success)
-            {
-                return status;
-            }
-
-            if (result.IsCompleted)
-            {
-                if (buffer.Length > 0)
+                if (!reading.IsSuccess(out var success))
                 {
-                    return Result.Failure<ReadOnlySequence<byte>>("Incomplete packet.");
+                    // Managed to read, but failed to slice the sequence.
+                    return reading.AsFailure<ReadOnlySequence<byte>>();
                 }
 
-                break;
-            }
+                if (success)
+                {
+                    return status;
+                }
 
-            input.AdvanceTo(consumed, examined);
+                if (result.IsCompleted)
+                {
+                    if (buffer.Length > 0)
+                    {
+                        return Result.Failure<ReadOnlySequence<byte>>("Incomplete packet.");
+                    }
+
+                    break;
+                }
+            }
+            finally
+            {
+                input.AdvanceTo(consumed, examined);
+            }
         }
 
         return Result.Failure<ReadOnlySequence<byte>>("Failed to read the packet.");
