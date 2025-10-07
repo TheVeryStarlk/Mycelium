@@ -26,31 +26,27 @@ internal readonly struct Address(string host, ushort port)
     /// <returns>True if the <see cref="ReadOnlySpan{T}"/> was converted successfully, otherwise, false.</returns>
     public static bool TryParse(ReadOnlySpan<char> input, out Address address)
     {
-        // Make port optional?
-        const char separator = ':';
-
         address = default;
 
-        if (input.Count(separator) > 1)
+        // Arbitrary limit from Minecraft.
+        if (input.Length > 64)
         {
             return false;
         }
 
-        var index = input.IndexOf(separator) + 1;
+        var separator = input.IndexOf(':');
 
-        if (index > 64 || index >= input.Length || index - 1 < 0 || !ushort.TryParse(input[index..], out var port))
+        if (separator < 1)
         {
             return false;
         }
 
-        var slice = input[..(index - 1)];
-
-        if (slice.Length < 1)
+        if (!ushort.TryParse(input[(separator + 1)..], out var port))
         {
             return false;
         }
 
-        address = new Address(slice.ToString(), port);
+        address = new Address(input[..separator].ToString(), port);
 
         return true;
     }
