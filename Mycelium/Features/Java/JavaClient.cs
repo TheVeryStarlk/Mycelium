@@ -57,7 +57,7 @@ internal sealed class JavaClient(ILogger<JavaClient> logger, IMemoryCache cache,
             ? Result.Success(cache.Set(input, response))
             : Result.Failure<JavaResponse>("Could not read status response.");
 
-        connection.Transport.Input.AdvanceTo(status.Start, status.End);
+        // connection.Transport.Input.AdvanceTo(status.Start, status.End);
 
         return result;
     }
