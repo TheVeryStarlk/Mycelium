@@ -24,7 +24,7 @@ internal sealed class SocketFactory
         {
             await socket.ConnectAsync(address.Host, address.Port, token);
         }
-        catch (SocketException)
+        catch (Exception exception) when (exception is SocketException or OperationCanceledException)
         {
             socket.Dispose();
             return Result.Failure<Socket>("Could not establish a connection.");
