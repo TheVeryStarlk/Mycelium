@@ -1,6 +1,7 @@
 ﻿using System.Buffers;
 using System.IO.Pipelines;
 using LightResults;
+using Microsoft.AspNetCore.Connections;
 
 namespace Mycelium.Features.Java.Packets;
 
@@ -18,43 +19,50 @@ internal static class StatusResponsePacket
     /// <exception cref="InvalidDataException">Incomplete packet.</exception>
     public static async ValueTask<Result<ReadOnlySequence<byte>>> ReadAsync(PipeReader input, CancellationToken token)
     {
-        while (true)
+        try
         {
-            var result = await input.ReadAsync(token);
-            var buffer = result.Buffer;
-
-            var consumed = buffer.Start;
-            var examined = buffer.End;
-
-            try
+            while (true)
             {
-                var reading = TryRead(ref buffer, out var status);
+                var result = await input.ReadAsync(token);
+                var buffer = result.Buffer;
 
-                if (!reading.IsSuccess(out var success))
-                {
-                    // Managed to read, but failed to slice the sequence.
-                    return reading.AsFailure<ReadOnlySequence<byte>>();
-                }
+                var consumed = buffer.Start;
+                var examined = buffer.End;
 
-                if (success)
+                try
                 {
-                    return status;
-                }
+                    var reading = TryRead(ref buffer, out var status);
 
-                if (result.IsCompleted)
-                {
-                    if (buffer.Length > 0)
+                    if (!reading.IsSuccess(out var success))
                     {
-                        return Result.Failure<ReadOnlySequence<byte>>("Incomplete packet.");
+                        // Managed to read, but failed to slice the sequence.
+                        return reading.AsFailure<ReadOnlySequence<byte>>();
                     }
 
-                    break;
+                    if (success)
+                    {
+                        return status;
+                    }
+
+                    if (result.IsCompleted)
+                    {
+                        if (buffer.Length > 0)
+                        {
+                            return Result.Failure<ReadOnlySequence<byte>>("Incomplete packet.");
+                        }
+
+                        break;
+                    }
+                }
+                finally
+                {
+                    input.AdvanceTo(consumed, examined);
                 }
             }
-            finally
-            {
-                input.AdvanceTo(consumed, examined);
-            }
+        }
+        catch (ConnectionResetException)
+        {
+            return Result.Failure<ReadOnlySequence<byte>>("Lost connection to the server.");
         }
 
         return Result.Failure<ReadOnlySequence<byte>>("Failed to read the packet.");
