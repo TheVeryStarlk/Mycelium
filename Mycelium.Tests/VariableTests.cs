@@ -13,4 +13,25 @@ internal sealed class VariableTests
             Assert.That(Variable.GetByteCount(-1), Is.EqualTo(5));
         });
     }
+
+    [Test]
+    public void VariableInteger_Writing_IsCorrect()
+    {
+        var actual = new byte[sizeof(int)];
+
+        actual = actual[..Variable.Write(actual, short.MaxValue)];
+
+        var expected = new byte[]
+        {
+            255,
+            255,
+            1
+        };
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(actual, Has.Length.EqualTo(3));
+            Assert.That(actual, Is.EqualTo(expected));
+        });
+    }
 }

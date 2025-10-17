@@ -5,7 +5,7 @@ namespace Mycelium.Tests;
 internal sealed class AddressTests
 {
     [Test]
-    public void Address_TryParse_IsCorrect()
+    public void Address_TryParse_IsTrue()
     {
         const string input = "mc.hypixel.net:25565";
 
@@ -15,5 +15,13 @@ internal sealed class AddressTests
             Assert.That(address.Host, Is.EqualTo("mc.hypixel.net"));
             Assert.That(address.Port, Is.EqualTo(25565));
         });
+    }
+
+    [Test]
+    public void Address_TryParse_IsFalse()
+    {
+        const string input = "mc.hypixel.net";
+
+        Assert.That(Address.TryParse(input, out _), Is.False);
     }
 }
