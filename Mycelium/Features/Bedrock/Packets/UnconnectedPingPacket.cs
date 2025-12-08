@@ -9,7 +9,7 @@ namespace Mycelium.Features.Bedrock.Packets;
 /// </summary>
 internal static class UnconnectedPingPacket
 {
-    private static readonly ImmutableArray<byte> Array =
+    private static readonly ImmutableArray<byte> Packet =
     [
         // Identifier
         1,
@@ -60,7 +60,7 @@ internal static class UnconnectedPingPacket
     /// <returns>A <see cref="Task"/> representing the asynchronous write operation.</returns>
     public static async Task<Result> WriteAsync(Socket socket)
     {
-        var sent = await socket.SendAsync(Array.AsMemory());
-        return sent == Array.Length ? Result.Success() : Result.Failure("Failed to send the packet.");
+        var sent = await socket.SendAsync(Packet.AsMemory());
+        return sent == Packet.Length ? Result.Success() : Result.Failure("Failed to send the packet.");
     }
 }

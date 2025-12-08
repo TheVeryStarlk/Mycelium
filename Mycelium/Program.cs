@@ -3,7 +3,7 @@ using Mycelium.Features;
 using Mycelium.Features.Bedrock;
 using Mycelium.Features.Java;
 
-var builder = WebApplication.CreateSlimBuilder(args);
+var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.ConfigureHttpJsonOptions(options => options.SerializerOptions.TypeInfoResolverChain.Insert(0, MyceliumJsonSerializerContext.Default));
 

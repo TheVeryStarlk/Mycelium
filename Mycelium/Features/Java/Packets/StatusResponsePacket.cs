@@ -86,10 +86,9 @@ internal static class StatusResponsePacket
             return false;
         }
 
-        // Packet's identifier.
         if (identifier != 0)
         {
-            return Result.Failure<bool>("Invalid identifier for packet.");
+            return Result.Failure<bool>("Invalid packet identifier.");
         }
 
         sequence = sequence.Slice(reader.Position);
