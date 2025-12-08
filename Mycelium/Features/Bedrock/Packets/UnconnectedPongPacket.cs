@@ -21,10 +21,19 @@ internal static class UnconnectedPongPacket
         // Maximum transmission unit.
         using var owner = MemoryOwner<byte>.Allocate(1500);
 
-        var received = await socket.ReceiveAsync(owner.Memory, token);
+        var received = 0;
+
+        try
+        {
+            received = await socket.ReceiveAsync(owner.Memory, token);
+        }
+        catch (OperationCanceledException)
+        {
+            return Result.Failure<string>();
+        }
 
         // Identifier, two longs, the magic and the string's unsigned short prefix.
-        // Probably should validate the payload, though.
+        // Probably should validate the payload too.
         const byte skip = 35;
 
         return received > skip

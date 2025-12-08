@@ -48,6 +48,7 @@ internal static class StatusRequestPacket
         span[index++] = 0;
 
         output.Advance(index);
-        await output.FlushAsync(token);
+
+        await output.FlushAsync();
     }
 }
