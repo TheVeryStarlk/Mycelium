@@ -1,7 +1,7 @@
 ﻿using System.Buffers;
 using System.Text;
 using Mycelium.Features.Bedrock;
-using Mycelium.Features.Java;
+using Mycelium.Features.Java.Response;
 
 namespace Mycelium.Tests;
 

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Mycelium.Features.Java.Response;
 
 namespace Mycelium.Features.Java;
 
