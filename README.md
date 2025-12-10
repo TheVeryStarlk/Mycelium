@@ -4,7 +4,6 @@ An ASP.NET Core Web API project for retrieving the status of any Minecraft Java/
 
 ## Plans
 
-* Refactor status responses.
 * Implement pinging.
 * Implement legacy servers.
 * Write more tests.
