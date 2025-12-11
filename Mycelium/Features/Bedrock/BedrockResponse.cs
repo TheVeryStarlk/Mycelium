@@ -45,9 +45,6 @@ internal sealed class BedrockResponse
     /// <returns>True if the <see cref="string"/> was converted successfully, otherwise, false.</returns>
     public static bool TryCreate(ReadOnlySpan<char> input, [NotNullWhen(true)] out BedrockResponse? response)
     {
-        // Edition;MOTD line 1;Protocol Version;Version Name;Player Count;Max Player Count;Server Unique ID;MOTD line 2;Game mode;Game mode;Port (IPv4);Port (IPv6);
-        // MCPE;Dedicated Server;390;1.14.60;0;10;13253860892328930865;Bedrock level;Survival;1;19132;19133;
-
         response = new BedrockResponse();
 
         const char separator = ';';
