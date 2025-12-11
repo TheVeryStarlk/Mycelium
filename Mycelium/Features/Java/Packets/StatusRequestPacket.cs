@@ -49,6 +49,6 @@ internal static class StatusRequestPacket
 
         output.Advance(index);
 
-        await output.FlushAsync();
+        await output.FlushAsync(token);
     }
 }
