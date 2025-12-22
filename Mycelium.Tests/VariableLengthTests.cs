@@ -2,15 +2,15 @@
 
 namespace Mycelium.Tests;
 
-internal sealed class VariableTests
+internal sealed class VariableLengthTests
 {
     [Test]
     public void Integer_GetByteCount_IsCorrect()
     {
         Assert.Multiple(() =>
         {
-            Assert.That(Variable.GetByteCount(0), Is.EqualTo(1));
-            Assert.That(Variable.GetByteCount(-1), Is.EqualTo(5));
+            Assert.That(VariableLength.GetByteCount(0), Is.EqualTo(1));
+            Assert.That(VariableLength.GetByteCount(-1), Is.EqualTo(5));
         });
     }
 
@@ -19,7 +19,7 @@ internal sealed class VariableTests
     {
         var actual = new byte[sizeof(int)];
 
-        actual = actual[..Variable.Write(actual, short.MaxValue)];
+        actual = actual[..VariableLength.Write(actual, short.MaxValue)];
 
         var expected = new byte[]
         {

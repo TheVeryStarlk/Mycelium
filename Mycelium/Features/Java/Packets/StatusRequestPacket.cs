@@ -18,15 +18,15 @@ internal static class StatusRequestPacket
     public static async ValueTask WriteAsync(PipeWriter output, string address, ushort port, CancellationToken token)
     {
         // Handshake packet only.
-        var length = Variable.GetByteCount(address) + sizeof(ushort) + 7;
+        var length = VariableLength.GetByteCount(address) + sizeof(ushort) + 7;
 
         // Accounts for the status request packet as well.
-        var total = length + Variable.GetByteCount(length) + 2;
+        var total = length + VariableLength.GetByteCount(length) + 2;
 
         var span = output.GetSpan(total);
         var index = 0;
 
-        index += Variable.Write(span, length);
+        index += VariableLength.Write(span, length);
 
         span[index++] = 0;
 
@@ -37,7 +37,7 @@ internal static class StatusRequestPacket
         span[index++] = byte.MaxValue;
         span[index++] = 15;
 
-        index += Variable.Write(span[index..], address);
+        index += VariableLength.Write(span[index..], address);
 
         BinaryPrimitives.WriteUInt16BigEndian(span[index..(index += sizeof(ushort))], port);
 

@@ -4,9 +4,9 @@ using System.Text;
 namespace Mycelium.Features.Java.Packets;
 
 /// <summary>
-/// Provides methods for reading/writing variable types.
+/// Provides methods for reading/writing variable length types.
 /// </summary>
-internal static class Variable
+internal static class VariableLength
 {
     /// <summary>
     /// Calculates the number of <see cref="byte"/>s produced by encoding a variable-<see cref="int"/>.
