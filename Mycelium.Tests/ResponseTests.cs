@@ -12,11 +12,9 @@ internal sealed class ResponseTests
     {
         const string input = "MCPE;Dedicated Server;390;1.14.60;0;10;13253860892328930865;Bedrock level;Survival;1;19132;19133;";
 
-        var success = BedrockResponse.TryCreate(input, out var response);
-
         Assert.Multiple(() =>
         {
-            Assert.That(success, Is.True);
+            Assert.That(BedrockResponse.TryCreate(input, out var response), Is.True);
 
             Assert.That(response?.Description[0], Is.EqualTo("Dedicated Server"));
             Assert.That(response?.Description[1], Is.EqualTo("Bedrock level"));
@@ -28,17 +26,23 @@ internal sealed class ResponseTests
             Assert.That(response?.Online, Is.EqualTo(0));
         });
     }
+    
+    [Test]
+    public void BedrockResponse_TryCreateIncomplete_IsFalse()
+    {
+        const string input = "MCPE;390;1.14.60;0;10;13253860892328930865;Bedrock level;Survival;1;19132;19133;";
+
+        Assert.That(BedrockResponse.TryCreate(input, out _), Is.False);
+    }
 
     [Test]
     public void JavaResponse_TryCreate_IsCorrect()
     {
         const string input = """{"version":{"name":"1.21.2","protocol":768},"players":{"max":100,"online":5},"description":{"text":"Hello, world!"}}""";
 
-        var success = JavaResponse.TryCreate(new ReadOnlySequence<byte>(Encoding.UTF8.GetBytes(input)), out var response);
-
         Assert.Multiple(() =>
         {
-            Assert.That(success, Is.True);
+            Assert.That(JavaResponse.TryCreate(new ReadOnlySequence<byte>(Encoding.UTF8.GetBytes(input)), out var response), Is.True);
 
             Assert.That(response?.Description, Is.EqualTo("""{"text":"Hello, world!"}"""));
 
@@ -48,5 +52,13 @@ internal sealed class ResponseTests
             Assert.That(response?.Maximum, Is.EqualTo(100));
             Assert.That(response?.Online, Is.EqualTo(5));
         });
+    }
+    
+    [Test]
+    public void JavaResponse_TryCreateIncomplete_IsFalse()
+    {
+        const string input = """{"version":{"protocol":768},"players":{"max":100,"online":5},"description":{"text":"Hello, world!"}}""";
+
+        Assert.That(JavaResponse.TryCreate(new ReadOnlySequence<byte>(Encoding.UTF8.GetBytes(input)), out _), Is.False);
     }
 }
