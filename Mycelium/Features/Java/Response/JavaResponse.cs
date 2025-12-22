@@ -53,23 +53,36 @@ internal sealed class JavaResponse(string? description, string? name, int versio
     /// <param name="input">The <see cref="ReadOnlySequence{T}"/> to read from.</param>
     /// <param name="response">The result <see cref="JavaResponse"/>.</param>
     /// <returns>True if the <see cref="ReadOnlySequence{T}"/> was converted successfully, otherwise, false.</returns>
+    [UnconditionalSuppressMessage(
+        "Trimming", 
+        "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code", 
+        Justification = "Referenced in MyceliumJsonSerializerContext")]
+    [UnconditionalSuppressMessage(
+        "AOT", 
+        "IL3050:Calling members annotated with 'RequiresDynamicCodeAttribute' may break functionality when AOT compiling.",
+        Justification = "Referenced in MyceliumJsonSerializerContext")]
     public static bool TryCreate(ReadOnlySequence<byte> input, [NotNullWhen(true)] out JavaResponse? response)
     {
-        var reader = new Utf8JsonReader(input);
+        // Use JsonNode serialization or Utf8JsonReader?
+        try
+        {
+            var reader = new Utf8JsonReader(input);
 
-#pragma warning disable IL2026
-#pragma warning disable IL3050
-        var result = JsonSerializer.Deserialize<JavaStatus>(ref reader, options);
-#pragma warning restore IL3050
-#pragma warning restore IL2026
+            var result = JsonSerializer.Deserialize<JavaStatus>(ref reader, options);
 
-        response = new JavaResponse(
-            result!.Description,
-            result.Version.Name,
-            result.Version.Protocol,
-            result.Players.Maximum,
-            result.Players.Online);
+            response = new JavaResponse(
+                result!.Description,
+                result.Version.Name,
+                result.Version.Protocol,
+                result.Players.Maximum,
+                result.Players.Online);
 
-        return true;
+            return true;
+        }
+        catch (JsonException)
+        {
+            response = null;
+            return false;
+        }
     }
 }
