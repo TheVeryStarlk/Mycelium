@@ -48,7 +48,7 @@ internal static class StatusResponsePacket
                     {
                         if (buffer.Length > 0)
                         {
-                            return Result.Failure<ReadOnlySequence<byte>>("Incomplete packet.");
+                            return Result.Failure<ReadOnlySequence<byte>>("Received incomplete packet.");
                         }
 
                         break;

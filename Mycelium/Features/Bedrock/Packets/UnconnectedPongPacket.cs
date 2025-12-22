@@ -21,7 +21,7 @@ internal static class UnconnectedPongPacket
         // Maximum transmission unit.
         using var owner = MemoryOwner<byte>.Allocate(1500);
 
-        var received = 0;
+        int received;
 
         try
         {

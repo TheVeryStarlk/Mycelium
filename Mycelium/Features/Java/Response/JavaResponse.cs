@@ -5,7 +5,7 @@ using System.Text.Json;
 namespace Mycelium.Features.Java.Response;
 
 /// <summary>
-/// Represents a Minecraft server status.
+/// Represents a Minecraft Java server status.
 /// </summary>
 /// <param name="description">Server's message of the day as known as MOTD.</param>
 /// <param name="name">Server software's name.</param>

@@ -4,7 +4,7 @@ using CommunityToolkit.HighPerformance;
 namespace Mycelium.Features.Bedrock;
 
 /// <summary>
-/// Represents a Minecraft server status.
+/// Represents a Minecraft Bedrock server status.
 /// </summary>
 internal sealed class BedrockResponse
 {

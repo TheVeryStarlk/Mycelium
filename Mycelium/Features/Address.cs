@@ -1,11 +1,10 @@
 ﻿namespace Mycelium.Features;
 
 /// <summary>
-/// Represents a Minecraft address.
+/// Represents a Minecraft IP address.
 /// </summary>
 /// <param name="host">The <see cref="string"/> part of the address.</param>
 /// <param name="port">The port part of the address.</param>
-/// <example>mc.hypixel.net:25565</example>
 internal readonly struct Address(string host, ushort port)
 {
     /// <summary>

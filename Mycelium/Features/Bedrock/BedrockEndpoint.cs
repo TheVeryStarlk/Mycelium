@@ -13,7 +13,6 @@ internal static class BedrockEndpoint
     /// <param name="route">The <see cref="IEndpointRouteBuilder"/> to add the endpoints to.</param>
     public static void MapBedrock(this IEndpointRouteBuilder route)
     {
-        // To add ping as well later.
         var group = route.MapGroup("/bedrock");
 
         group.MapGet(

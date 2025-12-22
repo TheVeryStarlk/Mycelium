@@ -14,7 +14,6 @@ internal static class JavaEndpoint
     /// <param name="route">The <see cref="IEndpointRouteBuilder"/> to add the endpoints to.</param>
     public static void MapJava(this IEndpointRouteBuilder route)
     {
-        // To add ping as well later.
         var group = route.MapGroup("/java");
 
         group.MapGet(

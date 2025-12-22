@@ -7,52 +7,54 @@ namespace Mycelium.Features.Java.Packets;
 /// </summary>
 internal static class SequenceReaderExtensions
 {
-    /// <summary>
-    /// Tries to read a variable-<see cref="int"/> from a <see cref="SequenceReader{T}"/>.
-    /// </summary>
     /// <param name="reader">The <see cref="SequenceReader{T}"/> to read from.</param>
-    /// <param name="value">The read <see cref="int"/> value.</param>
-    /// <returns>True if the variable-<see cref="int"/> was converted successfully, otherwise, false.</returns>
-    public static bool TryReadVariableInteger(ref this SequenceReader<byte> reader, out int value)
+    extension(ref SequenceReader<byte> reader)
     {
-        value = 0;
-
-        var index = 0;
-        var result = 0;
-
-        byte current;
-
-        do
+        /// <summary>
+        /// Tries to read a variable-<see cref="int"/> from a <see cref="SequenceReader{T}"/>.
+        /// </summary>
+        /// <param name="value">The read <see cref="int"/> value.</param>
+        /// <returns>True if the variable-<see cref="int"/> was converted successfully, otherwise, false.</returns>
+        public bool TryReadVariableInteger(out int value)
         {
-            if (!reader.TryRead(out current))
+            value = 0;
+
+            var index = 0;
+            var result = 0;
+
+            byte current;
+
+            do
             {
-                return false;
-            }
+                if (!reader.TryRead(out current))
+                {
+                    return false;
+                }
 
-            result |= (current & 127) << 7 * index;
+                result |= (current & 127) << 7 * index;
 
-            index++;
+                index++;
 
-            if (index > 5)
-            {
-                return false;
-            }
-        } while ((current & 128) != 0);
+                if (index > 5)
+                {
+                    return false;
+                }
+            } while ((current & 128) != 0);
 
-        value = result;
+            value = result;
 
-        return true;
-    }
+            return true;
+        }
 
-    /// <summary>
-    /// Tries to read a variable-<see cref="int"/> prefixed <see cref="string"/> from a <see cref="SequenceReader{T}"/>.
-    /// </summary>
-    /// <param name="reader">The <see cref="SequenceReader{T}"/> to read from.</param>
-    /// <param name="value">The read <see cref="string"/> value.</param>
-    /// <returns>True if the <see cref="string"/> was converted successfully, otherwise, false.</returns>
-    public static bool TryReadVariableString(ref this SequenceReader<byte> reader, out ReadOnlySequence<byte> value)
-    {
-        value = default;
-        return reader.TryReadVariableInteger(out var length) && reader.TryReadExact(length, out value);
+        /// <summary>
+        /// Tries to read a variable-<see cref="int"/> prefixed <see cref="string"/> from a <see cref="SequenceReader{T}"/>.
+        /// </summary>
+        /// <param name="value">The read <see cref="string"/> value.</param>
+        /// <returns>True if the <see cref="string"/> was converted successfully, otherwise, false.</returns>
+        public bool TryReadVariableString(out ReadOnlySequence<byte> value)
+        {
+            value = default;
+            return reader.TryReadVariableInteger(out var length) && reader.TryReadExact(length, out value);
+        }
     }
 }
