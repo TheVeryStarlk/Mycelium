@@ -25,11 +25,16 @@ internal static class UnconnectedPongPacket
 
         try
         {
-            received = await socket.ReceiveAsync(owner.Memory, token);
+            using var source = CancellationTokenSource.CreateLinkedTokenSource(token);
+            
+            // Should be configurable and consistent with Java too.
+            source.CancelAfter(TimeSpan.FromSeconds(25));
+            
+            received = await socket.ReceiveAsync(owner.Memory, source.Token);
         }
         catch (OperationCanceledException)
         {
-            return Result.Failure<string>();
+            return Result.Failure<string>("Response timed out.");
         }
 
         // Identifier, two longs, the magic and the string's unsigned short prefix.
