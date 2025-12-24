@@ -1,4 +1,4 @@
-﻿namespace Mycelium.Editions;
+﻿namespace Mycelium;
 
 public readonly struct Address(string host, ushort port)
 {

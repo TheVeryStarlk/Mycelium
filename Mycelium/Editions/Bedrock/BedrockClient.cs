@@ -1,34 +1,13 @@
 ﻿using System.Net.Sockets;
-using Microsoft.Extensions.Options;
 using Mycelium.Editions.Bedrock.Packets;
-using Mycelium.Hosting;
 
 namespace Mycelium.Editions.Bedrock;
 
-public sealed class BedrockClient
+public sealed class BedrockClient(ISocketFactory factory)
 {
-    private readonly IOptions<MyceliumOptions> options = Options.Create(new MyceliumOptions());
-    private readonly ISocketFactory factory = new SocketFactory();
-
-    public BedrockClient()
+    public BedrockClient() : this(new SocketFactory())
     {
-        // Nothing...
-    }
-    
-    public BedrockClient(IOptions<MyceliumOptions> options)
-    {
-        this.options = options;
-    }
-    
-    public BedrockClient(ISocketFactory factory)
-    {
-        this.factory = factory;
-    }
-    
-    public BedrockClient(IOptions<MyceliumOptions> options, ISocketFactory factory)
-    {
-        this.options = options;
-        this.factory = factory;
+        // What about logging?
     }
 
     public async Task<string?> RequestStatusAsync(Address address, CancellationToken token)

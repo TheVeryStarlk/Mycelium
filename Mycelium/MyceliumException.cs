@@ -1,3 +1,3 @@
-﻿namespace Mycelium.Editions;
+﻿namespace Mycelium;
 
 public sealed class MyceliumException(string message) : Exception(message);
