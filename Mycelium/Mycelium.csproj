@@ -1,19 +1,9 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <TargetFramework>net10.0</TargetFramework>
-        <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
-        <InvariantGlobalization>true</InvariantGlobalization>
-        <PublishAot>true</PublishAot>
-        <StripSymbols>true</StripSymbols>
-        <PublishTrimmed>true</PublishTrimmed>
-        <OptimizationPreference>speed</OptimizationPreference>
+        <Nullable>enable</Nullable>
     </PropertyGroup>
-
-    <ItemGroup>
-        <PackageReference Include="CommunityToolkit.HighPerformance" Version="8.4.0"/>
-        <PackageReference Include="LightResults" Version="10.0.2" />
-    </ItemGroup>
 
 </Project>
