@@ -1,4 +1,4 @@
 ﻿<Solution>
-    <Project Path="Mycelium.Api/Mycelium.Api.csproj" />
-    <Project Path="Mycelium/Mycelium.csproj" />
+    <Project Path="Mycelium.Api/Mycelium.Api.csproj"/>
+    <Project Path="Mycelium/Mycelium.csproj"/>
 </Solution>
