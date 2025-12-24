@@ -22,7 +22,7 @@ public sealed class BedrockResponse
     {
         response = new BedrockResponse();
         
-        var parts = input.Split(':');
+        var parts = input.Split(';');
         var index = 0;
 
         foreach (var part in parts)
