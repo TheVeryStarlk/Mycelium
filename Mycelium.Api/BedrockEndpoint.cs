@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
 using Mycelium.Bedrock;
-using Mycelium.Java;
 
 namespace Mycelium.Api;
 
