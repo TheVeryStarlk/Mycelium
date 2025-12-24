@@ -2,7 +2,7 @@
 using System.Net.Sockets;
 using System.Text;
 
-namespace Mycelium.Editions.Bedrock.Packets;
+namespace Mycelium.Clients.Bedrock.Packets;
 
 internal static class UnconnectedPongPacket
 {

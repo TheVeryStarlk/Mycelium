@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Mycelium.Clients.Bedrock;
 using Mycelium.Editions;
-using Mycelium.Editions.Bedrock;
 
 namespace Mycelium;
 

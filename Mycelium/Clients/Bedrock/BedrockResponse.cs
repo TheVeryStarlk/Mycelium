@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 
-namespace Mycelium.Editions.Bedrock;
+namespace Mycelium.Clients.Bedrock;
 
 public sealed class BedrockResponse
 {
