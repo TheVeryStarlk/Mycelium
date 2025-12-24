@@ -1,6 +1,5 @@
 ﻿using System.Net.Sockets;
 using Mycelium.Clients.Bedrock.Packets;
-using Mycelium.Editions;
 
 namespace Mycelium.Clients.Bedrock;
 
