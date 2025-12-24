@@ -4,6 +4,7 @@ namespace Mycelium.Bedrock;
 
 public sealed class BedrockResponse
 {
+    // Change that to just two properties?
     public string[] Description { get; set; } =
     [
         string.Empty,

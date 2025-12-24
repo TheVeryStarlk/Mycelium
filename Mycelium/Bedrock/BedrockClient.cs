@@ -21,7 +21,7 @@ public sealed class BedrockClient(ISocketFactory factory)
 
         return BedrockResponse.TryCreate(status, out var response) 
             ? response 
-            : throw new MyceliumException("Received invalid status.");
+            : throw new MyceliumException("Failed to read status.");
     }
     
     public async ValueTask<string?> RequestStatusAsync(Address address, CancellationToken token = default)
