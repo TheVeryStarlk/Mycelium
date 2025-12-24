@@ -1,5 +1,4 @@
-﻿using System.Buffers;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -56,13 +55,12 @@ public sealed class JavaResponse
         "AOT",
         "IL3050:Calling members annotated with 'RequiresDynamicCodeAttribute' may break functionality when AOT compiling.",
         Justification = "Referenced in MyceliumJsonSerializerContext")]
-    public static bool TryCreate(ReadOnlySequence<byte> input, [NotNullWhen(true)] out JavaResponse? response)
+    public static bool TryCreate(ReadOnlySpan<char> input, [NotNullWhen(true)] out JavaResponse? response)
     {
         // Use JsonNode deserialization or Utf8JsonReader?
         try
         {
-            var reader = new Utf8JsonReader(input);
-            var result = JsonSerializer.Deserialize<Status>(ref reader, options);
+            var result = JsonSerializer.Deserialize<Status>(input, options);
 
             response = new JavaResponse
             {

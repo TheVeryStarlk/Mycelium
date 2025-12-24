@@ -38,7 +38,7 @@ internal static class StatusResponsePacket
             }
         }
 
-        return ReadOnlySequence<byte>.Empty;
+        throw new MyceliumException("Failed to read packet.");
     }
 
     private static bool TryRead(ref ReadOnlySequence<byte> sequence, out ReadOnlySequence<byte> status)
