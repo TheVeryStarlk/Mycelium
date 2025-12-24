@@ -1,7 +1,7 @@
 ﻿using System.Net.Sockets;
-using Mycelium.Clients.Bedrock.Packets;
+using Mycelium.Bedrock.Packets;
 
-namespace Mycelium.Clients.Bedrock;
+namespace Mycelium.Bedrock;
 
 public sealed class BedrockClient(ISocketFactory factory)
 {

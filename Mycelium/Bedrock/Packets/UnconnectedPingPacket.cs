@@ -1,7 +1,7 @@
 ﻿using System.Collections.Immutable;
 using System.Net.Sockets;
 
-namespace Mycelium.Clients.Bedrock.Packets;
+namespace Mycelium.Bedrock.Packets;
 
 internal static class UnconnectedPingPacket
 {

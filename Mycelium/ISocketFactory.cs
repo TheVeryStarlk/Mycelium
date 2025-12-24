@@ -1,6 +1,6 @@
 ﻿using System.Net.Sockets;
 
-namespace Mycelium.Clients;
+namespace Mycelium;
 
 public interface ISocketFactory
 {
