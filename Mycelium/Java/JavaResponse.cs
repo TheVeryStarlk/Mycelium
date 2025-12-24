@@ -62,7 +62,6 @@ public sealed class JavaResponse
         try
         {
             var reader = new Utf8JsonReader(input);
-
             var result = JsonSerializer.Deserialize<Status>(ref reader, options);
 
             response = new JavaResponse
