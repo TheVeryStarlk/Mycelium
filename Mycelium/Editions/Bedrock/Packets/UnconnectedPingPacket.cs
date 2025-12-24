@@ -1,12 +1,8 @@
 ﻿using System.Collections.Immutable;
 using System.Net.Sockets;
-using LightResults;
 
-namespace Mycelium.Features.Bedrock.Packets;
+namespace Mycelium.Editions.Bedrock.Packets;
 
-/// <summary>
-/// Represents a Minecraft Bedrock unconnected ping packet.
-/// </summary>
 internal static class UnconnectedPingPacket
 {
     private static readonly ImmutableArray<byte> Packet =
@@ -53,14 +49,8 @@ internal static class UnconnectedPingPacket
         0
     ];
 
-    /// <summary>
-    /// Writes an unconnected ping packet.
-    /// </summary>
-    /// <param name="socket">The <see cref="Socket"/> to write to.</param>
-    /// <returns>A <see cref="Task"/> representing the asynchronous write operation.</returns>
-    public static async Task<Result> WriteAsync(Socket socket)
+    public static async Task<bool> TryWriteAsync(Socket socket)
     {
-        var sent = await socket.SendAsync(Packet.AsMemory());
-        return sent == Packet.Length ? Result.Success() : Result.Failure("Failed to send the packet.");
+        return await socket.SendAsync(Packet.AsMemory()) == Packet.Length;
     }
 }
