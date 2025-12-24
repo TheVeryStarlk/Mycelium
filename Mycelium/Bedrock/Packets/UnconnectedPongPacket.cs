@@ -6,7 +6,7 @@ namespace Mycelium.Bedrock.Packets;
 
 internal static class UnconnectedPongPacket
 {
-    public static async Task<string?> ReadAsync(Socket socket, CancellationToken token)
+    public static async ValueTask<string?> ReadAsync(Socket socket, CancellationToken token)
     {
         // Maximum transmission unit.
         var buffer = ArrayPool<byte>.Shared.Rent(1500);

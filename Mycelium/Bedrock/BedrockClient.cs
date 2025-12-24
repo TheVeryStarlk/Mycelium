@@ -10,7 +10,7 @@ public sealed class BedrockClient(ISocketFactory factory)
         // What about logging?
     }
 
-    public async Task<BedrockResponse?> RequestStatusAsync(string address, CancellationToken token = default)
+    public async ValueTask<BedrockResponse?> RequestStatusAsync(string address, CancellationToken token = default)
     {
         if (!Address.TryParse(address, out var result))
         {
@@ -24,7 +24,7 @@ public sealed class BedrockClient(ISocketFactory factory)
             : throw new MyceliumException("Received invalid status.");
     }
     
-    public async Task<string?> RequestStatusAsync(Address address, CancellationToken token = default)
+    public async ValueTask<string?> RequestStatusAsync(Address address, CancellationToken token = default)
     {
         using var socket = await factory.ConnectAsync(address, SocketType.Dgram, ProtocolType.Udp, token);
 

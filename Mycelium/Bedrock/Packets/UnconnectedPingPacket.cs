@@ -49,7 +49,7 @@ internal static class UnconnectedPingPacket
         0
     ];
 
-    public static async Task<bool> TryWriteAsync(Socket socket)
+    public static async ValueTask<bool> TryWriteAsync(Socket socket)
     {
         return await socket.SendAsync(Packet.AsMemory()) == Packet.Length;
     }
