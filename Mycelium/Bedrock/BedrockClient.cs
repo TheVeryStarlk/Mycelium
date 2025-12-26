@@ -96,11 +96,13 @@ public sealed class BedrockClient
     {
         using var socket = await factory.ConnectAsync(address, SocketType.Dgram, ProtocolType.Udp, token);
 
-        if (!await UnconnectedPingPacket.TryWriteAsync(socket))
+        if (await UnconnectedPingPacket.TryWriteAsync(socket))
         {
-            throw new MyceliumException("Failed to ping the server.");
+            return await UnconnectedPongPacket.ReadAsync(socket, token);
         }
+        
+        logger.LogTrace("Unconnected ping packet was invalid, bad headers?");
 
-        return await UnconnectedPongPacket.ReadAsync(socket, token);
+        throw new MyceliumException("Failed to ping the server.");
     }
 }

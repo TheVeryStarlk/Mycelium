@@ -61,7 +61,7 @@ public sealed class JavaClient
     /// <exception cref="MyceliumException">Invalid address.</exception>
     /// <exception cref="MyceliumException">Failed to read status.</exception>
     public static async ValueTask<JavaResponse?> RequestStatusAsync(
-        string address, 
+        string address,
         ILogger<JavaClient>? logger = null,
         ISocketFactory? factory = null,
         CancellationToken token = default)
@@ -72,7 +72,7 @@ public sealed class JavaClient
         }
 
         var client = new JavaClient(
-            logger ?? NullLogger<JavaClient>.Instance, 
+            logger ?? NullLogger<JavaClient>.Instance,
             factory ?? new SocketFactory());
 
         var status = await client.RequestStatusAsync(result, token);
@@ -94,6 +94,9 @@ public sealed class JavaClient
         try
         {
             await StatusRequestPacket.WriteAsync(output, address.Host, address.Port, token);
+
+            logger.LogTrace("Successfully read status request packet");
+
             return Encoding.UTF8.GetString(await StatusResponsePacket.ReadAsync(input, token));
         }
         finally
