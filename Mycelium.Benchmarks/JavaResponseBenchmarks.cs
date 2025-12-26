@@ -3,7 +3,7 @@ using Mycelium.Java;
 
 namespace Mycelium.Benchmarks;
 
-public sealed class JavaResponseBenchmarks
+public class JavaResponseBenchmarks
 {
     [Benchmark]
     public JavaResponse Creation()

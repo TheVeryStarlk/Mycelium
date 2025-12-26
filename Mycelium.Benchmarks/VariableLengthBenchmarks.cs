@@ -3,7 +3,7 @@ using Mycelium.Java.Packets;
 
 namespace Mycelium.Benchmarks;
 
-public sealed class VariableLengthBenchmarks
+public class VariableLengthBenchmarks
 {
     [Benchmark]
     [Arguments(256)]

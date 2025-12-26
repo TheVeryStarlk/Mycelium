@@ -2,7 +2,7 @@
 
 namespace Mycelium.Benchmarks;
 
-public sealed class AddressBenchmarks
+public class AddressBenchmarks
 {
     [Benchmark]
     public Address Parsing()

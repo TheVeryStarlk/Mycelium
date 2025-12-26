@@ -3,7 +3,7 @@ using Mycelium.Bedrock;
 
 namespace Mycelium.Benchmarks;
 
-public sealed class BedrockResponseBenchmarks
+public class BedrockResponseBenchmarks
 {
     [Benchmark]
     public BedrockResponse Creation()
