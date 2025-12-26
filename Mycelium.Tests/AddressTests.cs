@@ -1,6 +1,4 @@
-﻿using Mycelium.Features;
-
-namespace Mycelium.Tests;
+﻿namespace Mycelium.Tests;
 
 internal sealed class AddressTests
 {
@@ -20,12 +18,12 @@ internal sealed class AddressTests
     [Test]
     public void Address_TryParseMultipleDomains_IsCorrect()
     {
-        const string input = "foo.bar.qux:25565";
+        const string input = "foo.bar.quz:25565";
 
         Assert.Multiple(() =>
         {
             Assert.That(Address.TryParse(input, out var address), Is.True);
-            Assert.That(address.Host, Is.EqualTo("foo.bar.qux"));
+            Assert.That(address.Host, Is.EqualTo("foo.bar.quz"));
             Assert.That(address.Port, Is.EqualTo(25565));
         });
     }

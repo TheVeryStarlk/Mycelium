@@ -1,4 +1,4 @@
-﻿using Mycelium.Features.Java.Packets;
+﻿using Mycelium.Java.Packets;
 
 namespace Mycelium.Tests;
 
