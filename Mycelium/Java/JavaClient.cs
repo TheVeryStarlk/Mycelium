@@ -52,20 +52,30 @@ public sealed class JavaClient
     /// Attempts to request the status of a Minecraft server.
     /// </summary>
     /// <param name="address">The <see cref="string"/> of the server in <see cref="Address"/> format.</param>
+    /// <param name="factory">The <see cref="ISocketFactory"/> for the client.</param>
+    /// <param name="logger">The <see cref="ILogger{T}"/> for the client.</param>
     /// <param name="token">The token to monitor for cancellation requests. The default value is <see cref="CancellationToken.None"/>.</param>
     /// <returns>
     /// A <see cref="ValueTask{TResult}"/> that represents the asynchronous status request, yielding a <see cref="JavaResponse"/>.
     /// </returns>
     /// <exception cref="MyceliumException">Invalid address.</exception>
     /// <exception cref="MyceliumException">Failed to read status.</exception>
-    public async ValueTask<JavaResponse?> RequestStatusAsync(string address, CancellationToken token = default)
+    public static async ValueTask<JavaResponse?> RequestStatusAsync(
+        string address, 
+        ILogger<JavaClient>? logger = null,
+        ISocketFactory? factory = null,
+        CancellationToken token = default)
     {
         if (!Address.TryParse(address, out var result))
         {
             throw new MyceliumException("Invalid address.");
         }
 
-        var status = await RequestStatusAsync(result, token);
+        var client = new JavaClient(
+            logger ?? NullLogger<JavaClient>.Instance, 
+            factory ?? new SocketFactory());
+
+        var status = await client.RequestStatusAsync(result, token);
 
         return JavaResponse.TryCreate(status, out var response)
             ? response

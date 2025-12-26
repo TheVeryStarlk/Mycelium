@@ -50,6 +50,8 @@ public sealed class BedrockClient
     /// Attempts to request the status of a Minecraft server.
     /// </summary>
     /// <param name="address">The <see cref="string"/> of the server in <see cref="Address"/> format.</param>
+    /// <param name="factory">The <see cref="ISocketFactory"/> for the client.</param>
+    /// <param name="logger">The <see cref="ILogger{T}"/> for the client.</param>
     /// <param name="token">The token to monitor for cancellation requests. The default value is <see cref="CancellationToken.None"/>.</param>
     /// <returns>
     /// A <see cref="ValueTask{TResult}"/> that represents the asynchronous status request, yielding a <see cref="BedrockResponse"/>.
@@ -57,14 +59,22 @@ public sealed class BedrockClient
     /// <exception cref="MyceliumException">Invalid address.</exception>
     /// <exception cref="MyceliumException">Failed to read status.</exception>
     /// <exception cref="MyceliumException">Failed to ping the server.</exception>
-    public async ValueTask<BedrockResponse?> RequestStatusAsync(string address, CancellationToken token = default)
+    public static async ValueTask<BedrockResponse?> RequestStatusAsync(
+        string address, 
+        ILogger<BedrockClient>? logger = null,
+        ISocketFactory? factory = null,
+        CancellationToken token = default)
     {
         if (!Address.TryParse(address, out var result))
         {
             throw new MyceliumException("Invalid address.");
         }
+        
+        var client = new BedrockClient(
+            logger ?? NullLogger<BedrockClient>.Instance,
+            factory ?? new SocketFactory());
 
-        var status = await RequestStatusAsync(result, token);
+        var status = await client.RequestStatusAsync(result, token);
 
         return BedrockResponse.TryCreate(status, out var response)
             ? response
