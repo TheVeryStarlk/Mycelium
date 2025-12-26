@@ -1,6 +1,6 @@
 ﻿# Mycelium
 
-An robust & AOT-friendly library for retrieving the status of Minecraft Java/Bedrock servers.
+An AOT-friendly library for retrieving the status of Minecraft Java/Bedrock servers.
 
 ## Usage
 
