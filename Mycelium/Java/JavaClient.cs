@@ -74,7 +74,7 @@ public sealed class JavaClient
 
     public async ValueTask<string> RequestStatusAsync(Address address, CancellationToken token = default)
     {
-        var socket = await factory.ConnectAsync(address, SocketType.Stream, ProtocolType.Tcp, token);
+        using var socket = await factory.ConnectAsync(address, SocketType.Stream, ProtocolType.Tcp, token);
 
         await using var stream = new NetworkStream(socket, true);
 
