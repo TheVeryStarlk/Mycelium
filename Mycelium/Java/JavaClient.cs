@@ -1,15 +1,36 @@
 ﻿using System.IO.Pipelines;
 using System.Net.Sockets;
 using System.Text;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Mycelium.Java.Packets;
 
 namespace Mycelium.Java;
 
-public sealed class JavaClient(ISocketFactory factory)
+public sealed class JavaClient
 {
-    public JavaClient() : this(new SocketFactory())
+    private readonly ILogger<JavaClient> logger = NullLogger<JavaClient>.Instance;
+    private readonly ISocketFactory factory = new SocketFactory();
+
+    public JavaClient()
     {
-        // What about logging?
+        // ...
+    }
+
+    public JavaClient(ILogger<JavaClient> logger, ISocketFactory factory)
+    {
+        this.logger = logger;
+        this.factory = factory;
+    }
+    
+    public JavaClient(ILogger<JavaClient> logger)
+    {
+        this.logger = logger;
+    }
+    
+    public JavaClient(ISocketFactory factory)
+    {
+        this.factory = factory;
     }
 
     public async ValueTask<JavaResponse?> RequestStatusAsync(string address, CancellationToken token = default)

@@ -1,13 +1,34 @@
 ﻿using System.Net.Sockets;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Mycelium.Bedrock.Packets;
 
 namespace Mycelium.Bedrock;
 
-public sealed class BedrockClient(ISocketFactory factory)
+public sealed class BedrockClient
 {
-    public BedrockClient() : this(new SocketFactory())
+    private readonly ILogger<BedrockClient> logger = NullLogger<BedrockClient>.Instance;
+    private readonly ISocketFactory factory = new SocketFactory();
+
+    public BedrockClient()
     {
-        // What about logging?
+        // ...
+    }
+
+    public BedrockClient(ILogger<BedrockClient> logger, ISocketFactory factory)
+    {
+        this.logger = logger;
+        this.factory = factory;
+    }
+    
+    public BedrockClient(ILogger<BedrockClient> logger)
+    {
+        this.logger = logger;
+    }
+    
+    public BedrockClient(ISocketFactory factory)
+    {
+        this.factory = factory;
     }
 
     public async ValueTask<BedrockResponse?> RequestStatusAsync(string address, CancellationToken token = default)
