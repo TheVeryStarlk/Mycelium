@@ -8,24 +8,15 @@ internal static class UnconnectedPongPacket
 {
     public static async ValueTask<string?> ReadAsync(Socket socket, CancellationToken token)
     {
-        // Maximum transmission unit.
-        var buffer = ArrayPool<byte>.Shared.Rent(1500);
+        // https://github.com/CloudburstMC/Network/blob/0eb940aa5b60f0c156dda02f576a3f194d25e7ae/transport-raknet/src/main/java/org/cloudburstmc/netty/channel/raknet/RakConstants.java#L30.
+        using var owner = MemoryPool<byte>.Shared.Rent(1400);
 
-        try
-        {
-            var received = await socket.ReceiveAsync(buffer, token);
+        var received = await socket.ReceiveAsync(owner.Memory, token);
 
-            // Identifier, two longs, the magic and the string's unsigned short prefix.
-            // Probably should validate the payload too.
-            const byte skip = 35;
+        // Identifier, two longs, the magic and the string's unsigned short prefix.
+        // Probably should validate the payload too.
+        const byte skip = 35;
 
-            var slice = buffer.AsSpan()[skip..received];
-
-            return received > skip ? Encoding.UTF8.GetString(slice) : null;
-        }
-        finally
-        {
-            ArrayPool<byte>.Shared.Return(buffer);
-        }
+        return received > skip ? Encoding.UTF8.GetString(owner.Memory[skip..received].Span) : null;
     }
 }
