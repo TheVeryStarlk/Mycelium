@@ -4,6 +4,9 @@ using System.Text.Json.Serialization;
 
 namespace Mycelium.Java;
 
+/// <summary>
+/// Represents a Minecraft Java edition server response.
+/// </summary>
 public sealed class JavaResponse
 {
     internal sealed class Status
@@ -37,16 +40,37 @@ public sealed class JavaResponse
         TypeInfoResolver = MyceliumJsonSerializerContext.Default
     };
 
+    /// <summary>
+    /// The description (MOTD).
+    /// </summary>
     public string? Description { get; set; }
 
+    /// <summary>
+    /// The server software's name.
+    /// </summary>
     public string? Name { get; set; }
 
+    /// <summary>
+    /// The server software's supported protocol version.
+    /// </summary>
     public int Version { get; set; }
 
+    /// <summary>
+    /// The maximum count of players the server accepts. 
+    /// </summary>
     public int Maximum { get; set; }
 
+    /// <summary>
+    /// The currently online count of players in the server.
+    /// </summary>
     public int Online { get; set; }
 
+    /// <summary>
+    /// Converts the <see cref="string"/> representation of an <see cref="JavaResponse"/> to the equivalent <see cref="JavaResponse"/> structure.
+    /// </summary>
+    /// <param name="input">A <see cref="ReadOnlySpan{T}"/> containing the UTF-8 characters representing the <see cref="JavaResponse"/> to convert.</param>
+    /// <param name="response">Contains the converted <see cref="JavaResponse"/> equivalent</param>
+    /// <returns><c>true</c> if <paramref name="input"/> was converted successfully; otherwise, <c>false</c>.</returns>
     [UnconditionalSuppressMessage(
         "Trimming",
         "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code",
