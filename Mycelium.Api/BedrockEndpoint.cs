@@ -8,11 +8,22 @@ internal static class BedrockEndpoint
     public static void MapBedrock(this IEndpointRouteBuilder builder)
     {
         builder.MapGet(
-            "/bedrock/{address}",
-            async Task<Ok<BedrockResponse>> (string address, CancellationToken token, BedrockClient client) =>
+            "/bedrock/{input}",
+            async Task<Results<Ok<BedrockResponse>, BadRequest>> (string input, CancellationToken token, BedrockClient client) =>
             {
+                if (!Address.TryParse(input, out var address))
+                {
+                    return TypedResults.BadRequest();
+                }
+
                 var status = await client.RequestStatusAsync(address, token);
-                return TypedResults.Ok(status);
+
+                if (!BedrockResponse.TryCreate(status, out var response))
+                {
+                    return TypedResults.BadRequest();
+                }
+
+                return TypedResults.Ok(response);
             });
     }
 }

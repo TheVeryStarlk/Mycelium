@@ -8,11 +8,22 @@ internal static class JavaEndpoint
     public static void MapJava(this IEndpointRouteBuilder builder)
     {
         builder.MapGet(
-            "/java/{address}",
-            async Task<Ok<JavaResponse>> (string address, CancellationToken token, JavaClient client) =>
+            "/java/{input}",
+            async Task<Results<Ok<JavaResponse>, BadRequest>> (string input, CancellationToken token, JavaClient client) =>
             {
+                if (!Address.TryParse(input, out var address))
+                {
+                    return TypedResults.BadRequest();
+                }
+                
                 var status = await client.RequestStatusAsync(address, token);
-                return TypedResults.Ok(status);
+
+                if (!JavaResponse.TryCreate(status, out var response))
+                {
+                    return TypedResults.BadRequest();
+                }
+                
+                return TypedResults.Ok(response);
             });
     }
 }
