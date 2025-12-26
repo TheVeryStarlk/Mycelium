@@ -70,10 +70,7 @@ public sealed class BedrockClient
             throw new MyceliumException("Invalid address.");
         }
         
-        var client = new BedrockClient(
-            logger ?? NullLogger<BedrockClient>.Instance,
-            factory ?? new SocketFactory());
-
+        var client = new BedrockClient(logger ?? NullLogger<BedrockClient>.Instance, factory ?? new SocketFactory());
         var status = await client.RequestStatusAsync(result, token);
 
         return BedrockResponse.TryCreate(status, out var response)

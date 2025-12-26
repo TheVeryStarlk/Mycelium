@@ -71,10 +71,7 @@ public sealed class JavaClient
             throw new MyceliumException("Invalid address.");
         }
 
-        var client = new JavaClient(
-            logger ?? NullLogger<JavaClient>.Instance,
-            factory ?? new SocketFactory());
-
+        var client = new JavaClient(logger ?? NullLogger<JavaClient>.Instance, factory ?? new SocketFactory());
         var status = await client.RequestStatusAsync(result, token);
 
         return JavaResponse.TryCreate(status, out var response)
