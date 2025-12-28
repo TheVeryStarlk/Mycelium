@@ -21,7 +21,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Mycelium\Mycelium.csproj" />
+        <ProjectReference Include="..\Mycelium\Mycelium.csproj"/>
     </ItemGroup>
 
 </Project>
