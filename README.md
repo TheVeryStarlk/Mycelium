@@ -4,6 +4,8 @@ An AOT-friendly library for retrieving the status of Minecraft Java/Bedrock serv
 
 ## Usage
 
+Breaking changes are to be expected.
+
 Java
 
 ```cs
