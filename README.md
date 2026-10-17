@@ -25,3 +25,25 @@ Bedrock
 ```cs
 var response = await BedrockClient.RequestStatusAsync("mco.cubecraft.net:19132");
 ```
+
+## Parsing
+
+Instead of requesting the servers, Mycelium exposes methods for parsing already existing response.
+
+Java
+
+```csharp
+if (!JavaResponse.TryCreate(status, JavaVersion.Modern, out var response))
+{
+    return TypedResults.BadRequest();
+}
+```
+
+Bedrock
+
+```csharp
+if (!BedrockResponse.TryCreate(status, out var response))
+{
+    return TypedResults.BadRequest();
+}
+```
