@@ -1,11 +1,12 @@
 ﻿using System.Buffers;
 using System.IO.Pipelines;
+using System.Text;
 
 namespace Mycelium.Java.Packets;
 
 internal static class StatusResponsePacket
 {
-    public static async ValueTask<ReadOnlySequence<byte>> ReadAsync(PipeReader input, CancellationToken token)
+    public static async ValueTask<string> ReadAsync(PipeReader input, CancellationToken token)
     {
         while (true)
         {
@@ -19,7 +20,7 @@ internal static class StatusResponsePacket
             {
                 if (TryRead(ref buffer, out var status))
                 {
-                    return status;
+                    return Encoding.UTF8.GetString(status);
                 }
 
                 if (result.IsCompleted)

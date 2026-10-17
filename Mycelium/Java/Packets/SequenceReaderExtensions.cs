@@ -40,7 +40,15 @@ internal static class SequenceReaderExtensions
         public bool TryReadVariableString(out ReadOnlySequence<byte> value)
         {
             value = default;
-            return reader.TryReadVariableInteger(out var length) && reader.TryReadExact(length, out value);
+            return reader.TryReadVariableInteger(out var length) && length >= 0 && reader.TryReadExact(length, out value);
+        }
+
+        public bool TryReadBigEndianString(out ReadOnlySequence<byte> value)
+        {
+            value = default;
+
+            // The length is in UTF-16 characters, not bytes.
+            return reader.TryReadBigEndian(out short length) && length >= 0 && reader.TryReadExact(length * sizeof(char), out value);
         }
     }
 }

@@ -1,6 +1,5 @@
 ﻿using System.IO.Pipelines;
 using System.Net.Sockets;
-using System.Text;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Mycelium.Java.Packets;
@@ -52,6 +51,7 @@ public sealed class JavaClient
     /// Attempts to request the status of a Minecraft server.
     /// </summary>
     /// <param name="address">The <see cref="string"/> of the server in <see cref="Address"/> format.</param>
+    /// <param name="version">The <see cref="JavaVersion"/> to request the status with.</param>
     /// <param name="factory">The <see cref="ISocketFactory"/> for the client.</param>
     /// <param name="logger">The <see cref="ILogger{T}"/> for the client.</param>
     /// <param name="token">The token to monitor for cancellation requests. The default value is <see cref="CancellationToken.None"/>.</param>
@@ -62,6 +62,7 @@ public sealed class JavaClient
     /// <exception cref="MyceliumException">Failed to read status.</exception>
     public static async ValueTask<JavaResponse?> RequestStatusAsync(
         string address,
+        JavaVersion version,
         ILogger<JavaClient>? logger = null,
         ISocketFactory? factory = null,
         CancellationToken token = default)
@@ -72,14 +73,27 @@ public sealed class JavaClient
         }
 
         var client = new JavaClient(logger ?? NullLogger<JavaClient>.Instance, factory ?? new SocketFactory());
-        var status = await client.RequestStatusAsync(result, token);
+        var status = await client.RequestStatusAsync(result, version, token);
 
-        return JavaResponse.TryCreate(status, out var response)
+        return JavaResponse.TryCreate(status, version, out var response)
             ? response
             : throw new MyceliumException("Failed to read status.");
     }
 
-    public async ValueTask<string> RequestStatusAsync(Address address, CancellationToken token = default)
+    /// <summary>
+    /// Requests the raw status of a Minecraft server.
+    /// </summary>
+    /// <param name="address">The <see cref="Address"/> of the server.</param>
+    /// <param name="version">The <see cref="JavaVersion"/> to request the status with.</param>
+    /// <param name="token">The token to monitor for cancellation requests. The default value is <see cref="CancellationToken.None"/>.</param>
+    /// <returns>
+    /// A <see cref="ValueTask{TResult}"/> that represents the asynchronous status request,
+    /// yielding the raw status to be converted with <see cref="JavaResponse.TryCreate"/> using the same <paramref name="version"/>.
+    /// </returns>
+    /// <exception cref="MyceliumException">Received incomplete packet.</exception>
+    /// <exception cref="MyceliumException">Failed to read packet.</exception>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="version"/> is not a defined <see cref="JavaVersion"/>.</exception>
+    public async ValueTask<string> RequestStatusAsync(Address address, JavaVersion version, CancellationToken token = default)
     {
         using var socket = await factory.ConnectAsync(address, SocketType.Stream, ProtocolType.Tcp, token);
 
@@ -90,11 +104,31 @@ public sealed class JavaClient
 
         try
         {
-            await StatusRequestPacket.WriteAsync(output, address.Host, address.Port, token);
+            switch (version)
+            {
+                case JavaVersion.Modern:
+                    await StatusRequestPacket.WriteAsync(output, address.Host, address.Port, token);
+                    return await StatusResponsePacket.ReadAsync(input, token);
 
-            logger.LogTrace("Successfully read status request packet");
+                case JavaVersion.LegacyHost:
+                    await LegacyStatusRequestPacket.WriteHostAsync(output, address.Host, address.Port, token);
+                    break;
 
-            return Encoding.UTF8.GetString(await StatusResponsePacket.ReadAsync(input, token));
+                case JavaVersion.LegacyExtended:
+                    await LegacyStatusRequestPacket.WriteExtendedAsync(output, token);
+                    break;
+
+                case JavaVersion.LegacyBeta:
+                    await LegacyStatusRequestPacket.WriteBetaAsync(output, token);
+                    break;
+
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(version), version, null);
+            }
+
+            logger.LogTrace("Successfully wrote {Version} status request packet", version);
+
+            return await LegacyStatusResponsePacket.ReadAsync(input, token);
         }
         finally
         {

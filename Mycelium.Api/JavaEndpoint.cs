@@ -16,9 +16,9 @@ internal static class JavaEndpoint
                     return TypedResults.BadRequest();
                 }
                 
-                var status = await client.RequestStatusAsync(address, token);
+                var status = await client.RequestStatusAsync(address, JavaVersion.Modern, token);
 
-                if (!JavaResponse.TryCreate(status, out var response))
+                if (!JavaResponse.TryCreate(status, JavaVersion.Modern, out var response))
                 {
                     return TypedResults.BadRequest();
                 }
