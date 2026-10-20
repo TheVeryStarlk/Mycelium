@@ -37,7 +37,7 @@ internal static class LegacyStatusRequestPacket
 
     public static async ValueTask WriteHostAsync(PipeWriter output, string address, ushort port, CancellationToken token)
     {
-        const byte Version = 78;
+        const byte version = 78;
 
         // Version, address and port.
         var length = sizeof(byte) + sizeof(ushort) + address.Length * sizeof(char) + sizeof(int);
@@ -54,7 +54,7 @@ internal static class LegacyStatusRequestPacket
 
         BinaryPrimitives.WriteUInt16BigEndian(span[index..(index += sizeof(ushort))], (ushort) length);
 
-        span[index++] = Version;
+        span[index++] = version;
 
         BinaryPrimitives.WriteUInt16BigEndian(span[index..(index += sizeof(ushort))], (ushort) address.Length);
         index += Encoding.BigEndianUnicode.GetBytes(address, span[index..]);
